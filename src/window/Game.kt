@@ -1,7 +1,6 @@
 package window
 
 import framework.GameArray
-import framework.GameObject
 import framework.Node
 import framework.ObjectID
 import objects.PacMan
@@ -12,17 +11,15 @@ import java.awt.Graphics2D
 import java.awt.image.BufferStrategy
 import java.util.*
 
-/**
- * Created by michaelbrooke on 2016/04/23.
- */
 class Game : Canvas(), Runnable{
 
     private var running = false
 
-    val handler = ObjectHandler()
+    lateinit var handler: ObjectHandler
 
     lateinit var bs: BufferStrategy
     lateinit var g: Graphics2D
+    lateinit var gameArray: GameArray
 
     fun startGame(){
         if(running)
@@ -71,27 +68,50 @@ class Game : Canvas(), Runnable{
     fun initGame(){
         createBufferStrategy(2)
         bs = bufferStrategy
+        handler = ObjectHandler()
+        gameArray = createGameArray()
 
-        handler.addGameObject(PacMan(32F, 32F, ObjectID.PACMAN))
-        handler.addGameObject(Pill(525F, 45F, ObjectID.PILL))
+        val pacman = PacMan(1, 1, 32F, 32F, ObjectID.PACMAN, gameArray)
+
+        handler.addGameObject(pacman)
     }
 
     fun createGameArray(): GameArray{
         val array = GameArray()
         val randomNumberGenerator = Random()
-        var randomNum = 0
+        var randomNum: Int
+        var isPill: Boolean
+        var newNode: Node
 
-        for(i in 1..GameArray.WIDTH){
-            for(j in 1..GameArray.HEIGHT){
+        for(x in 0..GameArray.WIDTH-1){
+            for(y in 0..GameArray.HEIGHT-1){
 
                 randomNum = randomNumberGenerator.nextInt(100) + 1
-                val isPill = if(randomNum >=30) true else false
+                isPill = randomNum <= 2
 
-                //TODO - was here last night
+                newNode = Node(x, y, isPill)
+                array.addNode(x, y, newNode)
+
+                if(isPill) {
+                    handler.addGameObject(
+                        Pill(
+                            x,
+                            y,
+                            getPillCenterValue(x),
+                            getPillCenterValue(y),
+                            ObjectID.PILL
+                        )
+                    )
+                }
             }
         }
 
         return array
+    }
+
+    private fun getPillCenterValue(pos: Int): Float{
+        //Position * tile size + half the sprite width/height - half sprite size
+        return (pos*32+16-3).toFloat()
     }
 
     fun tick(){

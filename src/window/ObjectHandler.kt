@@ -4,10 +4,7 @@ import framework.GameObject
 import java.awt.Graphics2D
 import java.util.*
 
-/**
- * Created by michaelbrooke on 2016/04/24.
- */
-class ObjectHandler {
+class ObjectHandler() {
 
     val objects = LinkedList<GameObject>()
 
@@ -25,9 +22,5 @@ class ObjectHandler {
 
     fun addGameObject(newObject: GameObject){
         objects.add(newObject)
-    }
-
-    fun removeGameObject(objectToRemove: GameObject){
-        objects.remove(objectToRemove)
     }
 }

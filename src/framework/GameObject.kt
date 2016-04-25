@@ -5,10 +5,7 @@ import java.awt.Rectangle
 import java.awt.geom.AffineTransform
 import java.util.*
 
-/**
- * Created by michaelbrooke on 2016/04/24.
- */
-abstract class GameObject(var x: Float, var y: Float, val id: ObjectID) {
+abstract class GameObject(var arrayX: Int, var arrayY: Int, var x: Float, var y: Float, val id: ObjectID) {
 
     lateinit var affineTransform: AffineTransform
 

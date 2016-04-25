@@ -1,21 +1,15 @@
 package objects
 
-import com.sun.javafx.iio.ImageStorage
 import framework.*
 import window.GAME_WIDTH
-import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.Rectangle
 import java.awt.geom.AffineTransform
-import java.awt.image.BufferedImage
 import java.io.File
 import java.util.*
 import javax.imageio.ImageIO
 
-/**
- * Created by michaelbrooke on 2016/04/24.
- */
-class PacMan(x: Float, y: Float, id: ObjectID) : GameObject(x, y, id){
+class PacMan(arrayX: Int, arrayY: Int, x: Float, y: Float, id: ObjectID, val array: GameArray) : GameObject(arrayX, arrayY, x, y, id){
 
     val width = 32
     val height = 32
@@ -28,8 +22,6 @@ class PacMan(x: Float, y: Float, id: ObjectID) : GameObject(x, y, id){
 
     override fun tick(objects: LinkedList<GameObject>) {
 
-//        velX = 5F
-
         if(x >= (GAME_WIDTH-32) || x <= 0){
             changeDirection()
         }
@@ -41,7 +33,14 @@ class PacMan(x: Float, y: Float, id: ObjectID) : GameObject(x, y, id){
 
         x += velX
 
+        updateGridPosition()
         checkCollision(objects)
+    }
+
+    private fun updateGridPosition(){
+        arrayX = (x/32).toInt()
+        arrayY = (y/32).toInt()
+//        println("($arrayX, $arrayY)")
     }
 
     private fun findPill(graph: GameArray, fromTuple: Tuple, toTuple: Tuple): LinkedList<Node>{
@@ -81,33 +80,6 @@ class PacMan(x: Float, y: Float, id: ObjectID) : GameObject(x, y, id){
 
         }
 
-//        var currentNode = startNode
-
-//        while(true){
-//
-//            //Ensure that our current node is the one with the lowest cost in the current frontier
-//            frontier.forEach {
-//                if(currentNode.nodeCostF > it.nodeCostF)
-//                    currentNode = it
-//            }
-//
-//            //If we have found our goal, we need to stop messing with the frontier and explored lists
-//            if(currentNode == goalNode)
-//                break
-//
-//            //Otherwise we move the explored node to the explored list
-//            frontier.remove(currentNode)
-//            explored.add(currentNode)
-//
-//            //We look through the neighbours of out current node
-//            currentNode.neighbours.forEach {
-//                var costToNextNode = it.nodeCostF +
-//            }
-//
-//        }
-
-
-
         //TODO - Make this the proper list
         return LinkedList<Node>()
     }
@@ -118,11 +90,40 @@ class PacMan(x: Float, y: Float, id: ObjectID) : GameObject(x, y, id){
     }
 
     private fun checkCollision(objects: LinkedList<GameObject>){
+
+        var objectToRemove: GameObject? = null
+
         objects.forEach {
-            if(it.id == ObjectID.PILL)
-                if(getBounds().intersects(it.getBounds()))
-                    objects.remove(it)
+            if(it.id == ObjectID.PILL) {
+                if (it.arrayX == arrayX && it.arrayY == arrayY) {
+                    objectToRemove = it
+
+                    val pill = it as Pill
+                    with(pill) {
+                        array.togglePill(arrayX, arrayY)
+                    }
+                }
+            }
         }
+
+        objects.remove(objectToRemove)
+
+//        var objectToRemove: GameObject? = null
+//
+//        objects.forEach {
+//            if(it.id == ObjectID.PILL) {
+//                if (getBounds().intersects(it.getBounds())) {
+//                    objectToRemove = it
+//
+//                    val pill = it as Pill
+//                    with(pill) {
+//                        array.togglePill(arrayX, arrayY)
+//                    }
+//                }
+//            }
+//        }
+//
+//        objects.remove(objectToRemove)
     }
 
     override fun render(g: Graphics2D) {

@@ -1,10 +1,5 @@
 package framework;
 
-
-
-/**
- * Created by michaelbrooke on 2016/04/24.
- */
 public class GameArray {
 
     public static final int WIDTH = 26, HEIGHT = 29;
@@ -25,5 +20,9 @@ public class GameArray {
 
     public Node getNode(Tuple tuple){
         return array[tuple.first][tuple.second];
+    }
+
+    public void togglePill(int x, int y){
+        array[x][y].setPill(false);
     }
 }

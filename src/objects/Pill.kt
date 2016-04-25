@@ -7,10 +7,7 @@ import java.awt.Graphics2D
 import java.awt.Rectangle
 import java.util.*
 
-/**
- * Created by michaelbrooke on 2016/04/24.
- */
-class Pill(x: Float, y: Float, id: ObjectID) : GameObject(x, y, id){
+class Pill(arrayX: Int, arrayY: Int, x: Float, y: Float, id: ObjectID) : GameObject(arrayX, arrayY, x, y, id){
 
     val width = 6
     val height = 6

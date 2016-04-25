@@ -1,19 +1,14 @@
 package framework
 
-import java.util.*
-
-/**
- * Created by michaelbrooke on 2016/04/24.
- */
 data class Node(
-    var x: Int,
-    var y: Int,
+    var x: Int = 0,
+    var y: Int = 0,
 
-    var pill: Boolean,
+    var pill: Boolean = false,
 
-    var parentNode: Node,
+    var parentNode: Node? = null,
 
-    var nodeCostF: Float,
-    var costToGetHereSoFarG: Float,
-    var distanceToGoalH: Float
+    var nodeCostF: Float = 0F,
+    var costToGetHereSoFarG: Float = 0F,
+    var distanceToGoalH: Float = 0F
 )
