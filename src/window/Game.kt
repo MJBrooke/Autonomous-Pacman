@@ -83,28 +83,50 @@ class Game : Canvas(), Runnable{
         var isPill: Boolean
         var newNode: Node
 
-        for(x in 0..GameArray.WIDTH-1){
-            for(y in 0..GameArray.HEIGHT-1){
 
-                randomNum = randomNumberGenerator.nextInt(100) + 1
-                isPill = randomNum <= 2
+        val x = 16
+        val y = 2
 
-                newNode = Node(x, y, isPill)
-                array.addNode(x, y, newNode)
-
-                if(isPill) {
-                    handler.addGameObject(
-                        Pill(
-                            x,
-                            y,
-                            getPillCenterValue(x),
-                            getPillCenterValue(y),
-                            ObjectID.PILL
-                        )
-                    )
-                }
+        for(xx in 0..GameArray.WIDTH-1){
+            for(yy in 0..GameArray.HEIGHT-1){
+                newNode = Node(xx, yy, false)
+                array.addNode(xx, yy, newNode)
             }
         }
+
+        array.addNode(x,y, Node(x, y, true))
+        handler.addGameObject(
+            Pill(
+                x,
+                y,
+                getPillCenterValue(x),
+                getPillCenterValue(y),
+                ObjectID.PILL
+            )
+        )
+
+//        for(x in 0..GameArray.WIDTH-1){
+//            for(y in 0..GameArray.HEIGHT-1){
+//
+//                randomNum = randomNumberGenerator.nextInt(100) + 1
+//                isPill = randomNum <= 2
+//
+//                newNode = Node(x, y, isPill)
+//                array.addNode(x, y, newNode)
+//
+//                if(isPill) {
+//                    handler.addGameObject(
+//                        Pill(
+//                            x,
+//                            y,
+//                            getPillCenterValue(x),
+//                            getPillCenterValue(y),
+//                            ObjectID.PILL
+//                        )
+//                    )
+//                }
+//            }
+//        }
 
         return array
     }
