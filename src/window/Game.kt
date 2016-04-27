@@ -58,7 +58,7 @@ class Game : Canvas(), Runnable{
 
             if (System.currentTimeMillis() - timer > 1000) {
                 timer += 1000
-                println("FPS: $frames - Ticks: $updates")
+                //println("FPS: $frames - Ticks: $updates")
                 frames = 0
                 updates = 0
             }

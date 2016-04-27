@@ -1,7 +1,6 @@
 package objects
 
 import framework.*
-import window.GAME_WIDTH
 import java.awt.Graphics2D
 import java.awt.Rectangle
 import java.awt.geom.AffineTransform
@@ -15,7 +14,8 @@ class PacMan(arrayX: Int, arrayY: Int, x: Float, y: Float, id: ObjectID, val arr
     val height = 32
     val rectangle = Rectangle(width, height)
     val image = ImageIO.read(File("res/Pacman.png"))
-    val path = findPill(array, Tuple(arrayX, arrayY), Tuple(16, 2))
+    val movementCost = 1
+    val path = findAPill(array, Tuple(arrayX, arrayY), Tuple(16, 3))
 
     var counter = 0
 
@@ -39,10 +39,10 @@ class PacMan(arrayX: Int, arrayY: Int, x: Float, y: Float, id: ObjectID, val arr
         updateGridPosition()
         checkCollision(objects)
 
-        if(counter == 0)
-            println(path)
-
-        counter++
+//        if(counter == 0)
+//            println(path)
+//
+//        counter++
 
     }
 
@@ -52,7 +52,7 @@ class PacMan(arrayX: Int, arrayY: Int, x: Float, y: Float, id: ObjectID, val arr
 //        println("($arrayX, $arrayY)")
     }
 
-    private fun findPill(graph: GameArray, fromTuple: Tuple, toTuple: Tuple): LinkedList<Node>{
+    /*private fun findPill(graph: GameArray, fromTuple: Tuple, toTuple: Tuple): LinkedList<Node>{
 
         //println("Start")
 
@@ -161,7 +161,7 @@ class PacMan(arrayX: Int, arrayY: Int, x: Float, y: Float, id: ObjectID, val arr
 
         //TODO - Make this the proper list
         return explored
-    }
+    }*/
 
     private fun changeDirection(){
         right = !right
@@ -217,4 +217,136 @@ class PacMan(arrayX: Int, arrayY: Int, x: Float, y: Float, id: ObjectID, val arr
         rectangle.y = y.toInt()
         return rectangle
     }
+
+    //TODO - pull into its own class
+    private fun findAPill(graph: GameArray, fromTuple: Tuple, toTuple: Tuple): LinkedList<Node>{
+        println("Inside findAPill")
+        val open = LinkedList<Node>()
+        val closed = LinkedList<Node>()
+        val goalFound = false
+        val startNode = graph.getNode(fromTuple)
+        val goalNode = graph.getNode(toTuple)
+        var currentNode: Node
+
+        fun getLowestFNodeFromOpenList(): Node{
+
+            var lowestFNode = open.first
+
+            open.forEach {
+                if(lowestFNode.nodeCostF > it.nodeCostF)
+                    lowestFNode = it
+            }
+
+            return lowestFNode
+        }
+
+        fun swapNodeFromOpenToClosedList(node: Node){
+            closed.add(node)
+            open.remove(node)
+        }
+
+        fun isAtGoal(node: Node) = (node.x == toTuple.first) && (node.y == toTuple.second)
+
+        fun getNeighbours(node: Node): LinkedList<Node>{
+
+            val neighbours = LinkedList<Node>()
+
+            with(node) {
+                if(y > 0)
+                    neighbours.add(graph.getNode(x, y-1))
+
+                if(x > 0)
+                    neighbours.add(graph.getNode(x-1, y))
+
+                if(x < GameArray.WIDTH)
+                    neighbours.add(graph.getNode(x+1, y))
+
+                if(y < GameArray.HEIGHT)
+                    neighbours.add(graph.getNode(x, y+1))
+            }
+
+            return neighbours
+        }
+
+        fun getDistanceBetweenNodes(from: Node, to: Node): Float =
+                (Math.abs(from.x - to.x) + Math.abs(from.y - to.y)).toFloat()
+
+        fun getPathToGoal(start: Node, goal: Node): LinkedList<Node>{
+            val path = LinkedList<Node>()
+            var pathCompleted = false
+            var currNode: Node? = goal
+            //println(currNode)
+
+            while(!pathCompleted){
+                path.addFirst(currNode)
+                currNode = currNode!!.parentNode
+                //println("Node added to path: $currNode")
+
+                //println("CurrNode: (${currNode!!.x},${currNode!!.y}) -- start: (${start.x},${start.y})")
+                if(currNode!!.x == start.x && currNode.y == start.y)
+                    pathCompleted = true
+            }
+
+            return path
+        }
+
+        open.add(startNode)
+
+        while(!goalFound){
+
+            currentNode = getLowestFNodeFromOpenList()
+            swapNodeFromOpenToClosedList(currentNode)
+
+            if(isAtGoal(currentNode)) {
+                println("Goal found - constructing path...")
+                return getPathToGoal(startNode, currentNode)
+            }
+
+            val neighbours = getNeighbours(currentNode)
+
+            for(neighbour in neighbours){
+
+                if(open.contains(neighbour)){
+                    //TODO - ensure this if statement is correct
+                    if(neighbour.costToGetHereSoFarG > currentNode.costToGetHereSoFarG + movementCost){
+                        neighbour.costToGetHereSoFarG = currentNode.costToGetHereSoFarG + movementCost
+                        neighbour.nodeCostF = neighbour.distanceToGoalH + neighbour.costToGetHereSoFarG
+                        neighbour.parentNode = currentNode
+                    }
+                } else {
+                    neighbour.distanceToGoalH = getDistanceBetweenNodes(neighbour, goalNode)
+                    neighbour.costToGetHereSoFarG = currentNode.costToGetHereSoFarG + movementCost
+                    neighbour.nodeCostF = neighbour.distanceToGoalH + neighbour.costToGetHereSoFarG
+                    neighbour.parentNode = currentNode
+                    open.add(neighbour)
+                }
+            }
+            if(open.isEmpty())
+                return LinkedList()
+        }
+        return LinkedList()
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
