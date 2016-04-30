@@ -1,8 +1,5 @@
-package framework;
+package framework.obj;
 
-/**
- * Created by michaelbrooke on 2016/04/24.
- */
 public class Tuple {
 
     public int first;

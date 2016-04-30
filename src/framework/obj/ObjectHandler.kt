@@ -1,6 +1,5 @@
-package window
+package framework.obj
 
-import framework.GameObject
 import java.awt.Graphics2D
 import java.util.*
 

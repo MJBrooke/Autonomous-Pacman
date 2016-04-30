@@ -1,4 +1,4 @@
-package framework
+package framework.obj
 
 class Node(
         var x: Int = 0,

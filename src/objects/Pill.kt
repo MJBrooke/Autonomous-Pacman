@@ -1,17 +1,23 @@
 package objects
 
-import framework.GameObject
-import framework.ObjectID
+import framework.obj.GameObject
+import framework.obj.ObjectID
 import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.Rectangle
 import java.util.*
 
-class Pill(arrayX: Int, arrayY: Int, x: Float, y: Float, id: ObjectID) : GameObject(arrayX, arrayY, x, y, id){
+class Pill(arrayX: Int, arrayY: Int, id: ObjectID) : GameObject(arrayX, arrayY, id){
 
-    val width = 6
-    val height = 6
     val rectangle = Rectangle(width, height)
+
+    init {
+        width = 6
+        height = 6
+
+        x = getPillCenterValue(arrayX)
+        y = getPillCenterValue(arrayY)
+    }
 
     override fun tick(objects: LinkedList<GameObject>) {
 
@@ -26,5 +32,10 @@ class Pill(arrayX: Int, arrayY: Int, x: Float, y: Float, id: ObjectID) : GameObj
         rectangle.x = x.toInt()
         rectangle.y = y.toInt()
         return rectangle
+    }
+
+    private fun getPillCenterValue(pos: Int): Float{
+        //Position * tile size + half the sprite width/height - half sprite size
+        return (pos*32+16-3).toFloat()
     }
 }

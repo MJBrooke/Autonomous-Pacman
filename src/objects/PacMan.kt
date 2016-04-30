@@ -1,6 +1,6 @@
 package objects
 
-import framework.*
+import framework.obj.*
 import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.Rectangle
@@ -9,15 +9,18 @@ import java.io.File
 import java.util.*
 import javax.imageio.ImageIO
 
-class PacMan(arrayX: Int, arrayY: Int, x: Float, y: Float, id: ObjectID, val array: GameArray) : GameObject(arrayX, arrayY, x, y, id){
+class PacMan(arrayX: Int, arrayY: Int, id: ObjectID, val array: GameArray) : GameObject(arrayX, arrayY, id){
 
-    val width = 32
-    val height = 32
     val rectangle = Rectangle(width, height)
     val image = ImageIO.read(File("res/Pacman.png"))
     val movementCost = 1
-    val path = findAPill(array, Tuple(arrayX, arrayY), Tuple(16, 2))
+    val path = findAPill(array, Tuple(arrayX, arrayY), Tuple(12, 1))
     var nextSquareToMoveTo = path.remove()
+
+    init{
+        width = 32
+        height = 32
+    }
 
     override fun tick(objects: LinkedList<GameObject>) {
 
@@ -25,8 +28,6 @@ class PacMan(arrayX: Int, arrayY: Int, x: Float, y: Float, id: ObjectID, val arr
         updateDirectionOfMovement()
         move()
         checkCollision(objects)
-
-        println("\n")
     }
 
     private fun updateGridPosition(){
@@ -73,18 +74,11 @@ class PacMan(arrayX: Int, arrayY: Int, x: Float, y: Float, id: ObjectID, val arr
     }
 
     fun move(){
-//        print("In Move\t")
-//        print("Right? $right\t")
-//        print("Left? $left\t")
-//        print("Up? $up\t")
-//        println("Down? $down\t")
-        velX = 2F
-
         when{
-            right -> x += velX
-            left -> x -= velX
-            up -> y -= velX
-            down -> y += velX
+            right -> x += velocity
+            left -> x -= velocity
+            up -> y -= velocity
+            down -> y += velocity
         }
     }
 
