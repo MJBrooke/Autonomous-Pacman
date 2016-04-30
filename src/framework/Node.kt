@@ -1,19 +1,17 @@
 package framework
 
 class Node(
-    var x: Int = 0,
-    var y: Int = 0,
+        var x: Int = 0,
+        var y: Int = 0,
 
-    var pill: Boolean = false,
+        var wall: Boolean = false,
 
-    var parentNode: Node? = null,
+        var parentNode: Node? = null,
 
-    var nodeCostF: Float = 0F,
-    var costToGetHereSoFarG: Float = 0F,
-    var distanceToGoalH: Float = 0F
+        var nodeCostF: Float = 0F,
+        var costToGetHereSoFarG: Float = 0F,
+        var distanceToGoalH: Float = 0F
 ){
-
-
     override fun toString(): String{
         return "($x, $y)"
     }

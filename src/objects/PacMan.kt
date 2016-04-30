@@ -1,6 +1,7 @@
 package objects
 
 import framework.*
+import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.Rectangle
 import java.awt.geom.AffineTransform
@@ -15,157 +16,25 @@ class PacMan(arrayX: Int, arrayY: Int, x: Float, y: Float, id: ObjectID, val arr
     val rectangle = Rectangle(width, height)
     val image = ImageIO.read(File("res/Pacman.png"))
     val movementCost = 1
-    val path = findAPill(array, Tuple(arrayX, arrayY), Tuple(16, 3))
-
-    var counter = 0
-
-    init{
-        right = true
-    }
+    val path = findAPill(array, Tuple(arrayX, arrayY), Tuple(16, 2))
+    var nextSquareToMoveTo = path.remove()
 
     override fun tick(objects: LinkedList<GameObject>) {
 
-//        if(x >= (GAME_WIDTH-32) || x <= 0){
-//            changeDirection()
-//        }
-//
-//        if(right)
-//            velX = 3F
-//        else if(left)
-//            velX = -3F
-//
-//        x += velX
-
         updateGridPosition()
+        updateDirectionOfMovement()
+        move()
         checkCollision(objects)
 
-//        if(counter == 0)
-//            println(path)
-//
-//        counter++
-
+        println("\n")
     }
 
     private fun updateGridPosition(){
-        arrayX = (x/32).toInt()
-        arrayY = (y/32).toInt()
-//        println("($arrayX, $arrayY)")
-    }
+        if(x % 32 == 0F) //Ensures that pacman's position is only updated when his top left hand corner is fully in the next block
+            arrayX = (x/32).toInt()
 
-    /*private fun findPill(graph: GameArray, fromTuple: Tuple, toTuple: Tuple): LinkedList<Node>{
-
-        //println("Start")
-
-        //Function for getting the distance between 2 nodes
-        fun getDistanceBetweenNodes(from: Node, to: Node): Float =
-                (Math.abs(from.x - to.x) + Math.abs(from.y - to.y)).toFloat()
-
-        fun getNeighbours(node: Node): LinkedList<Node>{
-
-            //println("Inside getNeighbour")
-            val neighbours = LinkedList<Node>()
-
-            with(node) {
-                //TODO - refactor to use fewer cycles
-                for (arrX in (x-1)..(x+1)){
-                    for(arrY in (y-1)..(y+1)){
-                        //TODO - refactor into a method
-                        if(arrX >= 0 && arrX < GameArray.WIDTH){
-                            if(arrY >= 0 && arrY < GameArray.HEIGHT){
-                                if(arrX != x || arrY != y) {
-                                    val neighbourNode = graph.getNode(arrX, arrY)
-                                    neighbours.add(neighbourNode)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return neighbours
-        }
-
-        //Create lists to hold the un/explored game world
-        val unexplored = LinkedList<Node>()
-        val explored = LinkedList<Node>()
-
-        var goalFound = false
-
-        //Get the goal and start nodes from the game array
-        val goalNode = graph.getNode(toTuple)
-        val startNode = graph.getNode(fromTuple)
-
-        //Setup the initial node's values for the A* search
-//        startNode.costToGetHereSoFarG = 0F
-//        startNode.distanceToGoalH = getDistanceToGoal(startNode, goalNode)
-        startNode.nodeCostF = 0F
-
-        //The start node is the first node that will be explored
-        unexplored.add(startNode)
-
-        //println("Setup finished")
-
-        var currentNode = startNode
-
-        while(!unexplored.isEmpty()){
-
-            //println("Loop cycle")
-            //Find the node with the lowest heuristic cost in the open list
-            unexplored.forEach {
-                if(currentNode.nodeCostF > it.nodeCostF)
-                    currentNode = it
-            }
-
-            //Remove this node from the list
-            unexplored.remove(currentNode)
-
-            //Generate the neighbours of currentNode
-            val neighbours = getNeighbours(currentNode)
-
-            for(successor in neighbours){
-                println(successor)
-                //TODO - possible point of failure - check here if not working correctly
-                if(successor.x == goalNode.x && successor.y == goalNode.y) {
-                    goalFound = true
-                    break
-                }
-
-                successor.costToGetHereSoFarG = currentNode.costToGetHereSoFarG + getDistanceBetweenNodes(successor, currentNode)
-                successor.distanceToGoalH = getDistanceBetweenNodes(successor, goalNode)
-                successor.nodeCostF = successor.costToGetHereSoFarG + successor.distanceToGoalH
-
-                        // && unexplored.get(successor).nodeCostF < successor.nodeCostF)
-
-                if(unexplored.contains(successor)) {
-                    val nodeIndex = unexplored.indexOf(successor)
-                    val nodeFromList = unexplored[nodeIndex]
-
-                    if(nodeFromList.nodeCostF < successor.nodeCostF)
-                        continue
-                }
-
-                if(explored.contains(successor)){
-                    val nodeIndex = explored.indexOf(successor)
-                    val nodeFromList = explored[nodeIndex]
-
-                    if(nodeFromList.nodeCostF < successor.nodeCostF)
-                        continue
-                }
-
-                unexplored.add(successor)
-            }
-            if(goalFound)
-                break
-
-            explored.add(currentNode)
-        }
-
-        //TODO - Make this the proper list
-        return explored
-    }*/
-
-    private fun changeDirection(){
-        right = !right
-        left = !left
+        if(y % 32 == 0F)
+            arrayY = (y/32).toInt()
     }
 
     private fun checkCollision(objects: LinkedList<GameObject>){
@@ -176,33 +45,47 @@ class PacMan(arrayX: Int, arrayY: Int, x: Float, y: Float, id: ObjectID, val arr
             if(it.id == ObjectID.PILL) {
                 if (it.arrayX == arrayX && it.arrayY == arrayY) {
                     objectToRemove = it
-
-                    val pill = it as Pill
-                    with(pill) {
-                        array.togglePill(arrayX, arrayY)
-                    }
                 }
             }
         }
 
         objects.remove(objectToRemove)
+    }
 
-//        var objectToRemove: GameObject? = null
-//
-//        objects.forEach {
-//            if(it.id == ObjectID.PILL) {
-//                if (getBounds().intersects(it.getBounds())) {
-//                    objectToRemove = it
-//
-//                    val pill = it as Pill
-//                    with(pill) {
-//                        array.togglePill(arrayX, arrayY)
-//                    }
-//                }
-//            }
-//        }
-//
-//        objects.remove(objectToRemove)
+    fun updateDirectionOfMovement(){
+
+        if(arrayX == nextSquareToMoveTo.x && arrayY == nextSquareToMoveTo.y) {
+            if(!path.isEmpty())
+                nextSquareToMoveTo = path.remove()
+        }
+
+        right = false
+        left = false
+        down = false
+        up = false
+
+        when {
+            nextSquareToMoveTo.x > arrayX -> right = true
+            nextSquareToMoveTo.x < arrayX -> left = true
+            nextSquareToMoveTo.y > arrayY -> down = true
+            nextSquareToMoveTo.y < arrayY -> up = true
+        }
+    }
+
+    fun move(){
+//        print("In Move\t")
+//        print("Right? $right\t")
+//        print("Left? $left\t")
+//        print("Up? $up\t")
+//        println("Down? $down\t")
+        velX = 2F
+
+        when{
+            right -> x += velX
+            left -> x -= velX
+            up -> y -= velX
+            down -> y += velX
+        }
     }
 
     override fun render(g: Graphics2D) {
@@ -210,6 +93,24 @@ class PacMan(arrayX: Int, arrayY: Int, x: Float, y: Float, id: ObjectID, val arr
         affineTransform.translate(x.toDouble(), y.toDouble())
         affineTransform.scale(1.0, 1.0)
         g.drawImage(image, affineTransform, null)
+
+        //TODO - remove this rendering after debugging is done
+        //Render path
+        g.color = Color.BLUE
+        path.forEach{
+            g.drawRect(it.x*32, it.y*32, 24, 24)
+        }
+
+        //TODO - move this rendering to the game array, and then into Game.kt
+
+        g.color = Color.green
+        for(xx in 0..GameArray.WIDTH-1){
+            for(yy in 0..GameArray.HEIGHT-1){
+                val node = array.getNode(xx,yy)
+                if(node.wall)
+                    g.fillRect(node.x*32, node.y*32, 32,32)
+            }
+        }
     }
 
     override fun getBounds(): Rectangle {
@@ -220,7 +121,6 @@ class PacMan(arrayX: Int, arrayY: Int, x: Float, y: Float, id: ObjectID, val arr
 
     //TODO - pull into its own class
     private fun findAPill(graph: GameArray, fromTuple: Tuple, toTuple: Tuple): LinkedList<Node>{
-        println("Inside findAPill")
         val open = LinkedList<Node>()
         val closed = LinkedList<Node>()
         val goalFound = false
@@ -252,19 +152,30 @@ class PacMan(arrayX: Int, arrayY: Int, x: Float, y: Float, id: ObjectID, val arr
             val neighbours = LinkedList<Node>()
 
             with(node) {
-                if(y > 0)
-                    neighbours.add(graph.getNode(x, y-1))
+                if(y > 0){
+                    val neighbour = graph.getNode(x, y-1)
+                    if(!neighbour.wall)
+                        neighbours.add(neighbour)
+                }
 
-                if(x > 0)
-                    neighbours.add(graph.getNode(x-1, y))
+                if(x > 0) {
+                    val neighbour = graph.getNode(x - 1, y)
+                    if(!neighbour.wall)
+                        neighbours.add(neighbour)
+                }
 
-                if(x < GameArray.WIDTH)
-                    neighbours.add(graph.getNode(x+1, y))
+                if(x < GameArray.WIDTH) {
+                    val neighbour = graph.getNode(x + 1, y)
+                    if(!neighbour.wall)
+                        neighbours.add(neighbour)
+                }
 
-                if(y < GameArray.HEIGHT)
-                    neighbours.add(graph.getNode(x, y+1))
+                if(y < GameArray.HEIGHT) {
+                    val neighbour = graph.getNode(x, y + 1)
+                    if(!neighbour.wall)
+                        neighbours.add(neighbour)
+                }
             }
-
             return neighbours
         }
 
@@ -275,14 +186,11 @@ class PacMan(arrayX: Int, arrayY: Int, x: Float, y: Float, id: ObjectID, val arr
             val path = LinkedList<Node>()
             var pathCompleted = false
             var currNode: Node? = goal
-            //println(currNode)
 
             while(!pathCompleted){
                 path.addFirst(currNode)
                 currNode = currNode!!.parentNode
-                //println("Node added to path: $currNode")
 
-                //println("CurrNode: (${currNode!!.x},${currNode!!.y}) -- start: (${start.x},${start.y})")
                 if(currNode!!.x == start.x && currNode.y == start.y)
                     pathCompleted = true
             }
@@ -307,18 +215,19 @@ class PacMan(arrayX: Int, arrayY: Int, x: Float, y: Float, id: ObjectID, val arr
             for(neighbour in neighbours){
 
                 if(open.contains(neighbour)){
-                    //TODO - ensure this if statement is correct
                     if(neighbour.costToGetHereSoFarG > currentNode.costToGetHereSoFarG + movementCost){
                         neighbour.costToGetHereSoFarG = currentNode.costToGetHereSoFarG + movementCost
                         neighbour.nodeCostF = neighbour.distanceToGoalH + neighbour.costToGetHereSoFarG
                         neighbour.parentNode = currentNode
                     }
                 } else {
-                    neighbour.distanceToGoalH = getDistanceBetweenNodes(neighbour, goalNode)
-                    neighbour.costToGetHereSoFarG = currentNode.costToGetHereSoFarG + movementCost
-                    neighbour.nodeCostF = neighbour.distanceToGoalH + neighbour.costToGetHereSoFarG
-                    neighbour.parentNode = currentNode
-                    open.add(neighbour)
+                    if(!closed.contains(neighbour)) {
+                        neighbour.distanceToGoalH = getDistanceBetweenNodes(neighbour, goalNode)
+                        neighbour.costToGetHereSoFarG = currentNode.costToGetHereSoFarG + movementCost
+                        neighbour.nodeCostF = neighbour.distanceToGoalH + neighbour.costToGetHereSoFarG
+                        neighbour.parentNode = currentNode
+                        open.add(neighbour)
+                    }
                 }
             }
             if(open.isEmpty())

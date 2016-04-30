@@ -1,17 +1,18 @@
 package framework;
 
-public class GameArray {
+public class GameArray{
 
+    //TODO - add an extra 2 to each, to create walls on either sides?
     public static final int WIDTH = 26, HEIGHT = 29;
 
     private Node[][] array = new Node[WIDTH][HEIGHT];
 
-    public void addNode(int x, int y, Node node){
-        array[x][y] = node;
+    public void addNode(Node node){
+        array[node.getX()][node.getY()] = node;
     }
 
-    public void removeNode(int x, int y){
-        array[x][y] = null;
+    public void addNode(int x, int y, Node node){
+        array[x][y] = node;
     }
 
     public Node getNode(int x, int y){
@@ -23,6 +24,6 @@ public class GameArray {
     }
 
     public void togglePill(int x, int y){
-        array[x][y].setPill(false);
+        array[x][y].setWall(false);
     }
 }
