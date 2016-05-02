@@ -27,12 +27,12 @@ class GameWorld : Renderable {
     }
 
     fun loadLevelFromImage(path: String){
-        setupLevelImage(path)
+        getLevelImage(path)
         iterateOverImagePixels()
         addPacMan()
     }
 
-    private fun setupLevelImage(path: String){
+    private fun getLevelImage(path: String){
         levelImg = BufferedImageLoader.getImage(path)
     }
 
