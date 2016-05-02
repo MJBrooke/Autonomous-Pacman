@@ -15,7 +15,8 @@ class PacMan(arrayX: Int, arrayY: Int, id: ObjectID, val array: GameArray) : Gam
     val rectangle = Rectangle(width, height)
     val image = ImageIO.read(File("res/Pacman.png"))
 
-    val path = AStarSearch.findAPath(array, Tuple(arrayX, arrayY), Tuple(12, 1))
+    //Setup the initial path of pacman
+    var path = AStarSearch.findAPath(array, Tuple(arrayX, arrayY), Tuple(15, 23))
     var nextSquareToMoveTo = path.remove()
 
     init{
@@ -25,9 +26,10 @@ class PacMan(arrayX: Int, arrayY: Int, id: ObjectID, val array: GameArray) : Gam
 
     override fun tick(objects: LinkedList<GameObject>) {
         updateGridPosition()
+        updatePath()
         updateDirectionOfMovement()
         move()
-        checkCollision(objects)
+        checkCollision()
     }
 
     private fun updateGridPosition(){
@@ -38,14 +40,25 @@ class PacMan(arrayX: Int, arrayY: Int, id: ObjectID, val array: GameArray) : Gam
             arrayY = (y/32).toInt()
     }
 
-    private fun checkCollision(objects: LinkedList<GameObject>){
-        objects.forEach {
-            if(it.id == ObjectID.PILL) {
-                if (it.arrayX == arrayX && it.arrayY == arrayY) {
-                    objects.remove(it)
-                    return
-                }
+    fun updatePath(){
+        if(path.isEmpty()){
+
+            val closestPill = array.getClosestPillLocation(arrayX, arrayY)
+
+            if(isAnotherPill(closestPill)) {
+                path = AStarSearch.findAPath(array, Tuple(arrayX, arrayY), closestPill)
             }
+        }
+    }
+
+    private fun isAnotherPill(pill: Tuple) = pill.first != 0 && pill.second != 0
+
+    private fun checkCollision(){
+
+        val node = array.getNode(arrayX, arrayY)
+
+        if(node.pill != null){
+            node.pill = null
         }
     }
 
@@ -88,7 +101,7 @@ class PacMan(arrayX: Int, arrayY: Int, id: ObjectID, val array: GameArray) : Gam
 
         //TODO - remove this rendering after debugging is done
         //Render path
-        g.color = Color.BLUE
+        g.color = Color.GREEN
         path.forEach{
             g.drawRect(it.x*32, it.y*32, 24, 24)
         }

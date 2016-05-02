@@ -47,7 +47,6 @@ class GameWorld : Renderable {
 
     private fun interpretPixel(pixel: Pixel, x: Int, y: Int){
         updateGameArray(pixel, x, y)
-        updateObjectHandler(pixel, x, y)
     }
 
     private fun updateGameArray(pixel: Pixel, x: Int, y: Int){
@@ -56,18 +55,10 @@ class GameWorld : Renderable {
             else -> NodeFactory.getOpenNode(x, y)
         }
 
+        if(pixel.isPill())
+            node.pill = PillFactory.getPill(x, y)
+
         world.addNode(node)
-    }
-
-    private fun updateObjectHandler(pixel: Pixel, x: Int, y: Int){
-        when {
-            pixel.isPill() -> addPill(x, y)
-        }
-    }
-
-    private fun addPill(x: Int, y: Int){
-        val pill = PillFactory.getPill(x, y)
-        handler.addGameObject(pill)
     }
 
     private fun addPacMan(){

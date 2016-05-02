@@ -9,6 +9,9 @@ object AStarSearch {
 
     val movementCost = 1
 
+    @JvmStatic fun getDistanceBetweenNodes(from: Node, to: Node) =
+            (Math.abs(from.x - to.x) + Math.abs(from.y - to.y)).toFloat()
+
     fun findAPath(graph: GameArray, fromTuple: Tuple, toTuple: Tuple): LinkedList<Node> {
         val open = LinkedList<Node>()
         val closed = LinkedList<Node>()
@@ -68,9 +71,6 @@ object AStarSearch {
             return neighbours
         }
 
-        fun getDistanceBetweenNodes(from: Node, to: Node) =
-                (Math.abs(from.x - to.x) + Math.abs(from.y - to.y)).toFloat()
-
         fun getPathToGoal(start: Node, goal: Node): LinkedList<Node> {
             val path = LinkedList<Node>()
             var pathCompleted = false
@@ -95,7 +95,6 @@ object AStarSearch {
             swapNodeFromOpenToClosedList(currentNode)
 
             if(isAtGoal(currentNode)) {
-                println("Goal found - constructing path...")
                 return getPathToGoal(startNode, currentNode)
             }
 

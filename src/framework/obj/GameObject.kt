@@ -14,7 +14,7 @@ abstract class GameObject(var arrayX: Int, var arrayY: Int, val id: ObjectID): T
     var x = arrayX*32F
     var y = arrayY*32F
 
-    val velocity = 4F
+    val velocity = 8F
 
     var width = 0
     var height = 0
