@@ -6,7 +6,6 @@ import framework.factory.NodeFactory
 import framework.factory.PillFactory
 import framework.intf.Renderable
 import framework.obj.ObjectHandler
-import framework.obj.ObjectID
 import java.awt.Graphics2D
 import java.awt.image.BufferedImage
 
@@ -16,6 +15,7 @@ class GameWorld : Renderable {
     val handler = ObjectHandler()
 
     lateinit var levelImg: BufferedImage
+    lateinit var pacman: PacMan
 
     fun tick() {
         handler.tick()
@@ -30,6 +30,7 @@ class GameWorld : Renderable {
         getLevelImage(path)
         iterateOverImagePixels()
         addPacMan()
+        addGhost()
     }
 
     private fun getLevelImage(path: String){
@@ -62,7 +63,12 @@ class GameWorld : Renderable {
     }
 
     private fun addPacMan(){
-        val pacman = PacMan(14, 23, ObjectID.PACMAN, world)
+        pacman = PacMan(14, 23, world)
         handler.addGameObject(pacman)
+    }
+
+    private fun addGhost(){
+        val ghost = Ghost(13, 14, world, pacman)
+        handler.addGameObject(ghost)
     }
 }

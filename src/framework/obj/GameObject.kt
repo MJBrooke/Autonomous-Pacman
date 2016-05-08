@@ -3,7 +3,6 @@ package framework.obj
 import framework.intf.Renderable
 import framework.intf.Tickable
 import java.awt.Graphics2D
-import java.awt.Rectangle
 import java.awt.geom.AffineTransform
 import java.util.*
 
@@ -27,6 +26,4 @@ abstract class GameObject(var arrayX: Int, var arrayY: Int, val id: ObjectID): T
     abstract override fun tick(objects: LinkedList<GameObject>)
 
     abstract override fun render(g: Graphics2D)
-
-    abstract fun getBounds(): Rectangle
 }
