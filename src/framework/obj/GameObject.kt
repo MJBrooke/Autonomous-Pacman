@@ -13,15 +13,8 @@ abstract class GameObject(var arrayX: Int, var arrayY: Int, val id: ObjectID): T
     var x = arrayX*32F
     var y = arrayY*32F
 
-    val velocity = 8F
-
     var width = 0
     var height = 0
-
-    var left = false
-    var right = false
-    var up = false
-    var down = false
 
     abstract override fun tick(objects: LinkedList<GameObject>)
 

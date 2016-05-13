@@ -12,13 +12,14 @@ object AStarSearch {
     @JvmStatic fun getDistanceBetweenNodes(from: Node, to: Node) =
             (Math.abs(from.x - to.x) + Math.abs(from.y - to.y)).toFloat()
 
-    fun findAPath(graph: GameArray, fromTuple: Tuple, toTuple: Tuple): LinkedList<Node> {
+    fun findAPath(graph: GameArray, fromTuple: Tuple, toTuple: Tuple, dir: DIRECTION = DIRECTION.NONE): LinkedList<Node> {
         val open = LinkedList<Node>()
         val closed = LinkedList<Node>()
         val goalFound = false
         val startNode = graph.getNode(fromTuple)
         val goalNode = graph.getNode(toTuple)
         var currentNode: Node
+        var firstRetrievalOfNeighbours = true
 
         fun getLowestFNodeFromOpenList(): Node {
 
@@ -38,6 +39,46 @@ object AStarSearch {
         }
 
         fun isAtGoal(node: Node) = (node.x == toTuple.first) && (node.y == toTuple.second)
+
+        fun getInitialNeighbours(node: Node): LinkedList<Node>{
+
+            val neighbours = LinkedList<Node>()
+            with(node) {
+                if(y > 0){ //ABOVE
+                    if(dir != DIRECTION.DOWN) {
+                        val neighbour = graph.getNode(x, y - 1)
+                        if (!neighbour.wall)
+                            neighbours.add(neighbour)
+                    }
+                }
+
+                if(x > 0) { //LEFT
+                    if(dir != DIRECTION.RIGHT) {
+                        val neighbour = graph.getNode(x - 1, y)
+                        if (!neighbour.wall)
+                            neighbours.add(neighbour)
+                    }
+                }
+
+                if(x < GameArray.WIDTH) {//RIGHT
+                    if(dir != DIRECTION.LEFT) {
+                        val neighbour = graph.getNode(x + 1, y)
+                        if (!neighbour.wall)
+                            neighbours.add(neighbour)
+                    }
+                }
+
+                if(y < GameArray.HEIGHT) {//BELOW
+                    if(dir != DIRECTION.UP) {
+                        val neighbour = graph.getNode(x, y + 1)
+                        if (!neighbour.wall)
+                            neighbours.add(neighbour)
+                    }
+                }
+            }
+
+            return neighbours
+        }
 
         fun getNeighbours(node: Node): LinkedList<Node> {
 
@@ -98,7 +139,12 @@ object AStarSearch {
                 return getPathToGoal(startNode, currentNode)
             }
 
-            val neighbours = getNeighbours(currentNode)
+            val neighbours = if(firstRetrievalOfNeighbours){
+                firstRetrievalOfNeighbours = false
+                getInitialNeighbours(currentNode)
+            }
+            else
+                getNeighbours(currentNode)
 
             for(neighbour in neighbours){
 

@@ -1,11 +1,21 @@
 package framework.obj
 
+import framework.search.DIRECTION
 import java.awt.Graphics2D
 import java.awt.geom.AffineTransform
 import java.awt.image.BufferedImage
 import java.util.*
 
 abstract class Sprite(arrayX: Int, arrayY: Int, id: ObjectID, val array: GameArray) : GameObject(arrayX, arrayY, id){
+
+    var left = false
+    var right = false
+    var up = false
+    var down = false
+
+    var prevDir = DIRECTION.LEFT
+
+    var velocity = 4F
 
     lateinit var path: LinkedList<Node>
     lateinit var nextSquareToMoveTo: Node
@@ -18,20 +28,21 @@ abstract class Sprite(arrayX: Int, arrayY: Int, id: ObjectID, val array: GameArr
 
     override fun tick(objects: LinkedList<GameObject>) {
         updateGridPosition()
-        updatePath()
+        updatePath(objects)
         updateDirectionOfMovement()
         move()
     }
 
     protected fun updateGridPosition(){
-        if(x % 32 == 0F)
-            arrayX = (x/32).toInt()
+        if(x % 32F == 0F)
+            arrayX = (x / 32).toInt()
 
-        if(y % 32 == 0F)
-            arrayY = (y/32).toInt()
+        if(y % 32F == 0F)
+            arrayY = (y / 32).toInt()
+
     }
 
-    abstract fun updatePath()
+    abstract fun updatePath(objects: LinkedList<GameObject>)
 
     fun getCurrentLocation() = Tuple(arrayX, arrayY)
 
@@ -48,10 +59,22 @@ abstract class Sprite(arrayX: Int, arrayY: Int, id: ObjectID, val array: GameArr
         up = false
 
         when {
-            nextSquareToMoveTo.x > arrayX -> right = true
-            nextSquareToMoveTo.x < arrayX -> left = true
-            nextSquareToMoveTo.y > arrayY -> down = true
-            nextSquareToMoveTo.y < arrayY -> up = true
+            nextSquareToMoveTo.x > arrayX -> {
+                prevDir = DIRECTION.RIGHT
+                right = true
+            }
+            nextSquareToMoveTo.x < arrayX -> {
+                prevDir = DIRECTION.LEFT
+                left = true
+            }
+            nextSquareToMoveTo.y > arrayY -> {
+                prevDir = DIRECTION.DOWN
+                down = true
+            }
+            nextSquareToMoveTo.y < arrayY -> {
+                prevDir = DIRECTION.UP
+                up = true
+            }
         }
     }
 
