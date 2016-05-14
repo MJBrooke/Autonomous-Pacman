@@ -1,81 +1,146 @@
 package objects
 
-import framework.extension.render
 import framework.obj.*
-import framework.search.AStarSearch
-import framework.search.ESCAPE
+import framework.search.AStar
+import framework.search.DIRECTION
 import java.awt.Graphics2D
 import java.io.File
 import java.util.*
 import javax.imageio.ImageIO
 
-class PacMan(arrayX: Int, arrayY: Int, array: GameArray) : Sprite(arrayX, arrayY, ObjectID.PACMAN, array){
+class PacMan(arrayX: Int, arrayY: Int, array: GameArray, handler: ObjectHandler) : Sprite(arrayX, arrayY, array){
+
+    val proximitySensitivity = 2
+
+    val imgUp = ImageIO.read(File("res/PacmanUp.png"))
+    val imgDown = ImageIO.read(File("res/PacmanDown.png"))
+    val imgLeft = ImageIO.read(File("res/PacmanLeft.png"))
+    val imgRight = ImageIO.read(File("res/PacmanRight.png"))
+
+    val objects = handler.objects
+
+    val AStarSearch = AStar(array, objects)
 
     init {
-        image = ImageIO.read(File("res/Pacman.png"))
-        path = AStarSearch.findAPath(array, Tuple(arrayX, arrayY), Tuple(15, 23))
+        createInitialPath()
+    }
+
+    private fun createInitialPath(){
+//        path = AStarSearch.findAPath(array, Tuple(arrayX, arrayY), Tuple(15, 23))
+        path = AStarSearch.findAPathToPill(Tuple(arrayX, arrayY), Tuple(15, 23))
         nextSquareToMoveTo = path.remove()
     }
 
-    override fun tick(objects: LinkedList<GameObject>) {
-        super.tick(objects)
+    override fun tick() {
+        super.tick()
         checkCollision()
     }
 
-    override fun updatePath(objects: LinkedList<GameObject>){
+    override fun render(g: Graphics2D) {
 
-        //case: Ghost is nearby - move in opposite direction
+        super.render(g)
 
-        var ghostNearby = false
-        var ghostX = 0
-        var ghostY = 0
-        objects.forEach {
-            if (it is Ghost) {
-                if (it.arrayX >= arrayX - 5 && it.arrayX <= arrayX + 5) {
-                    if (it.arrayY >= arrayY - 5 && it.arrayY <= arrayY + 5) {
-                        ghostNearby = true
-                        ghostX = it.arrayX
-                        ghostY = it.arrayY
-                    }
-                }
-            }
+        when(prevDir){
+            DIRECTION.UP -> g.drawImage(imgUp, affineTransform, null)
+            DIRECTION.DOWN -> g.drawImage(imgDown, affineTransform, null)
+            DIRECTION.LEFT -> g.drawImage(imgLeft, affineTransform, null)
+            DIRECTION.RIGHT -> g.drawImage(imgRight, affineTransform, null)
         }
 
-        if (ghostNearby) {
-
-            val escapeDestination = when{
-                ghostX < arrayX && ghostY < arrayY -> ESCAPE.BR
-                ghostX == arrayX && ghostY < arrayY -> ESCAPE.B
-                ghostX > arrayX && ghostY < arrayY -> ESCAPE.BL
-
-                ghostX < arrayX && ghostY == arrayY -> ESCAPE.R
-                ghostX > arrayX && ghostY == arrayY -> ESCAPE.L
-
-                ghostX < arrayX && ghostY > arrayY -> ESCAPE.TR
-                ghostX == arrayX && ghostY > arrayY -> ESCAPE.T
-                ghostX > arrayX && ghostY > arrayY -> ESCAPE.TL
-
-                else -> ESCAPE.T
-            }
-
-            val newDestination = Tuple(escapeDestination.x, escapeDestination.y)
-
-            path = AStarSearch.findAPath(array, getCurrentLocation(), newDestination)
-
-        }
-
-        //case: Current path is empty, must find a new pill to move towards
-        if(path.isEmpty()){
-
-            val nextPillLocation = array.getClosestPillLocation(arrayX, arrayY)
-
-            if(thereIsAnotherPill(nextPillLocation)) {
-                path = AStarSearch.findAPath(array, getCurrentLocation(), nextPillLocation)
-            }
-        }
-
-        //case: Is still on path, and there is no ghost nearby - simply continue without further action
+        //TODO - remove this path-rendering after debugging is done
+        //path.render(g)
     }
+
+    override fun updatePath(){
+        checkForGhosts()
+        checkIfCurrentPathIsFinished()
+    }
+
+    private fun checkForGhosts(){
+        objects.forEach {
+            if(it is Ghost)
+                if(ghostNearby(it))
+                    getNewFleePath(it)
+        }
+    }
+
+    private fun ghostNearby(ghost: Ghost) = ghostIsNearbyOnXAxis(ghost) && ghostIsNearbyOnYAxis(ghost)
+
+    private fun ghostIsNearbyOnXAxis(ghost: Ghost) = ghost.arrayX >= (arrayX - proximitySensitivity) && ghost.arrayX <= (arrayX + proximitySensitivity)
+
+    private fun ghostIsNearbyOnYAxis(ghost: Ghost) = ghost.arrayY >= (arrayY - proximitySensitivity) && ghost.arrayY <= (arrayY + proximitySensitivity)
+
+    private fun getNewFleePath(ghost: Ghost){
+        array.clearValues()
+        path = AStarSearch.findAPathToPill(getCurrentLocation(), getFleeLocation(ghost))
+    }
+
+    fun checkIfCurrentPathIsFinished(){
+        if(path.isEmpty()){
+            getNewPillPath()
+        }
+    }
+
+    fun getNewPillPath(){
+        array.clearValues()
+
+        val nextPillLocation = array.getClosestPillLocation(arrayX, arrayY)
+
+        if(thereIsAnotherPill(nextPillLocation)) {
+            path = AStarSearch.findAPathToPill(getCurrentLocation(), nextPillLocation)
+        }
+    }
+
+    fun getFleeLocation(ghost: Ghost): Tuple =
+            when {
+                ghostIsAboveLeft(ghost) -> getValidFleeLocation(15, 26, 20, 29)//BR
+                ghostIsAbove(ghost) -> getValidFleeLocation(1, 26, 20, 29)//B
+                ghostIsAboveRight(ghost) -> getValidFleeLocation(1, 12, 20, 29)//BL
+
+                ghostIsLeft(ghost) -> getValidFleeLocation(15, 26, 1, 29)//R
+                ghostIsRight(ghost) -> getValidFleeLocation(1, 11, 1, 29)//L
+
+                ghostIsBelowLeft(ghost) -> getValidFleeLocation(15, 26, 1, 8)//TR
+                ghostIsBelow(ghost) -> getValidFleeLocation(1, 26, 1, 14)//T
+                ghostIsBelowRight(ghost) -> getValidFleeLocation(1, 12, 1, 8)//TL
+
+                else -> Tuple(1,1)
+            }
+
+    private fun ghostIsAboveLeft(ghost: Ghost) = ghost.arrayX < arrayX && ghost.arrayY < arrayY
+    private fun ghostIsAbove(ghost: Ghost) = ghost.arrayX == arrayX && ghost.arrayY < arrayY
+    private fun ghostIsAboveRight(ghost: Ghost) = ghost.arrayX > arrayX && ghost.arrayY < arrayY
+
+    private fun ghostIsLeft(ghost: Ghost) = ghost.arrayX < arrayX && ghost.arrayY == arrayY
+    private fun ghostIsRight(ghost: Ghost) = ghost.arrayX > arrayX && ghost.arrayY == arrayY
+
+    private fun ghostIsBelowLeft(ghost: Ghost) = ghost.arrayX < arrayX && ghost.arrayY > arrayY
+    private fun ghostIsBelow(ghost: Ghost) = ghost.arrayX == arrayX && ghost.arrayY > arrayY
+    private fun ghostIsBelowRight(ghost: Ghost) = ghost.arrayX > arrayX && ghost.arrayY > arrayY
+
+    private fun getValidFleeLocation(lowX: Int, highX: Int, lowY: Int, highY: Int): Tuple {
+
+        var validLocationFound = false
+        var fleeX = 0
+        var fleeY = 0
+
+        while(!validLocationFound){
+            fleeX = getRandomNumberInRange(lowX, highX)
+            fleeY = getRandomNumberInRange(lowY, highY)
+
+            //TODO - refactor into explanatory methods
+            if(isValidLocation(fleeX, fleeY))
+                validLocationFound = true
+        }
+
+        return Tuple(fleeX, fleeY)
+    }
+
+    private fun isValidLocation(fleeX: Int, fleeY: Int) =
+            !array.getNode(fleeX, fleeY).wall && fleeX != arrayX && fleeY != arrayY
+
+    private fun getRandomNumberInRange(low: Int, high: Int) =
+        Random().nextInt(high-low)+low
 
     private fun thereIsAnotherPill(pill: Tuple) = pill.first != 0 && pill.second != 0
 
@@ -88,13 +153,143 @@ class PacMan(arrayX: Int, arrayY: Int, array: GameArray) : Sprite(arrayX, arrayY
         }
     }
 
-    override fun render(g: Graphics2D) {
-
-        super.render(g)
-
-        //TODO - remove this path-rendering after debugging is done
-        path.render(g)
-    }
+//    fun findAPath(fromTuple: Tuple, toTuple: Tuple): LinkedList<Node> {
+//        val open = LinkedList<Node>()
+//        val closed = LinkedList<Node>()
+//        val goalFound = false
+//        val startNode = array.getNode(fromTuple)
+//        val goalNode = array.getNode(toTuple)
+//        var currentNode: Node
+//        var ghost: Ghost? = null
+//
+//        //TODO - this code is whack. Maybe pass actual references of each ghost?
+//        objects.forEach {
+//            if (it is Ghost) {
+//                ghost = it
+//            }
+//        }
+//
+//        fun getLowestFNodeFromOpenList(): Node {
+//
+//            var lowestFNode = open.first
+//
+//            open.forEach {
+//                if(lowestFNode.nodeCostF > it.nodeCostF)
+//                    lowestFNode = it
+//            }
+//
+//            return lowestFNode
+//        }
+//
+//        fun swapNodeFromOpenToClosedList(node: Node){
+//            closed.add(node)
+//            open.remove(node)
+//        }
+//
+//        fun isAtGoal(node: Node) = (node.x == toTuple.first) && (node.y == toTuple.second)
+//
+//        fun getNeighbours(node: Node): LinkedList<Node> {
+//
+//            val neighbours = LinkedList<Node>()
+//
+//            with(node) {
+//                if(y > 0){
+//                    val neighbour = array.getNode(x, y - 1)
+//                    if(!neighbour.wall)
+//                        neighbours.add(neighbour)
+//                }
+//
+//                if(x > 0) {
+//                    val neighbour = array.getNode(x - 1, y)
+//                    if(!neighbour.wall)
+//                        neighbours.add(neighbour)
+//                }
+//
+//                if(x < GameArray.WIDTH) {
+//                    val neighbour = array.getNode(x + 1, y)
+//                    if(!neighbour.wall)
+//                        neighbours.add(neighbour)
+//                }
+//
+//                if(y < GameArray.HEIGHT) {
+//                    val neighbour = array.getNode(x, y + 1)
+//                    if(!neighbour.wall)
+//                        neighbours.add(neighbour)
+//                }
+//            }
+//            return neighbours
+//        }
+//
+//        fun getPathToGoal(start: Node, goal: Node): LinkedList<Node> {
+//            val path = LinkedList<Node>()
+//            var pathCompleted = false
+//            var currNode: Node? = goal
+//
+//            while(!pathCompleted){
+//                path.addFirst(currNode)
+//                currNode = currNode!!.parentNode
+//
+//                if(currNode!!.x == start.x && currNode.y == start.y)
+//                    pathCompleted = true
+//            }
+//
+//            return path
+//        }
+//
+//        if(isAtGoal(startNode)) {
+//            val list = LinkedList<Node>()
+//            list.addFirst(startNode)
+//            return list
+//        }
+//
+//        open.add(startNode)
+//
+//        while(!goalFound){
+//
+//            currentNode = getLowestFNodeFromOpenList()
+//            swapNodeFromOpenToClosedList(currentNode)
+//
+//            if(isAtGoal(currentNode)) {
+//                return getPathToGoal(startNode, currentNode)
+//            }
+//
+//            val neighbours = getNeighbours(currentNode)
+//
+//            for(neighbour in neighbours){
+//
+//                if(open.contains(neighbour)){
+//                    if(neighbour.costToGetHereSoFarG > currentNode.costToGetHereSoFarG + AStarSearch.movementCost){
+//
+//                        neighbour.costToGetHereSoFarG = currentNode.costToGetHereSoFarG + AStarSearch.movementCost
+//
+//                        neighbour.nodeCostF = neighbour.distanceToGoalH + neighbour.costToGetHereSoFarG
+//
+//                        if(neighbour.x == ghost!!.arrayX && neighbour.y == ghost!!.arrayY)
+//                            neighbour.nodeCostF += 1000
+//                        //neighbour.parentNode = currentNode
+//                    }
+//                } else {
+//                    if(!closed.contains(neighbour)) {
+//                        neighbour.distanceToGoalH = AStarSearch.getDistanceBetweenNodes(neighbour, goalNode)
+//
+//                        neighbour.costToGetHereSoFarG =
+//                            currentNode.costToGetHereSoFarG + AStarSearch.movementCost
+//
+//                        neighbour.nodeCostF = neighbour.distanceToGoalH + neighbour.costToGetHereSoFarG
+//
+//                        if(neighbour.x == ghost!!.arrayX && neighbour.y == ghost!!.arrayY)
+//                            neighbour.nodeCostF += 1000
+//
+//                        neighbour.parentNode = currentNode
+//                        open.add(neighbour)
+//                    }
+//                }
+//            }
+//            if(open.isEmpty())
+//                return LinkedList()
+//        }
+//        return LinkedList()
+//    }
 }
 
 

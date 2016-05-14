@@ -3,10 +3,11 @@ package framework.obj
 import framework.search.DIRECTION
 import java.awt.Graphics2D
 import java.awt.geom.AffineTransform
-import java.awt.image.BufferedImage
 import java.util.*
 
-abstract class Sprite(arrayX: Int, arrayY: Int, id: ObjectID, val array: GameArray) : GameObject(arrayX, arrayY, id){
+const val SIZE = 32
+
+abstract class Sprite(arrayX: Int, arrayY: Int, val array: GameArray) : GameObject(arrayX, arrayY){
 
     var left = false
     var right = false
@@ -19,68 +20,89 @@ abstract class Sprite(arrayX: Int, arrayY: Int, id: ObjectID, val array: GameArr
 
     lateinit var path: LinkedList<Node>
     lateinit var nextSquareToMoveTo: Node
-    lateinit var image: BufferedImage
 
     init{
-        width = 32
-        height = 32
+        width = SIZE
+        height = SIZE
     }
 
-    override fun tick(objects: LinkedList<GameObject>) {
+    override fun tick() {
         updateGridPosition()
-        updatePath(objects)
+        updatePath()
         updateDirectionOfMovement()
         move()
     }
 
-    protected fun updateGridPosition(){
-        if(x % 32F == 0F)
-            arrayX = (x / 32).toInt()
+    override fun render(g: Graphics2D){
+        affineTransform = AffineTransform()
+        affineTransform.translate(x.toDouble(), y.toDouble())
+        affineTransform.scale(1.0, 1.0)
+    }
 
-        if(y % 32F == 0F)
-            arrayY = (y / 32).toInt()
+    private fun updateGridPosition(){
+        if(x % SIZE == 0F)
+            arrayX = (x / SIZE).toInt()
+
+        if(y % SIZE == 0F)
+            arrayY = (y / SIZE).toInt()
 
     }
 
-    abstract fun updatePath(objects: LinkedList<GameObject>)
+    protected abstract fun updatePath()
 
-    fun getCurrentLocation() = Tuple(arrayX, arrayY)
+    private fun updateDirectionOfMovement(){
 
-    fun updateDirectionOfMovement(){
+        getNextSquareToMoveTo()
+        resetDirections()
+        setDirectionToMove()
+    }
 
+    private fun getNextSquareToMoveTo(){
         if(isAtNextSquare()) {
             if(!path.isEmpty())
                 nextSquareToMoveTo = path.remove()
         }
+    }
 
+    private fun resetDirections(){
         right = false
         left = false
         down = false
         up = false
+    }
 
+    private fun setDirectionToMove(){
         when {
-            nextSquareToMoveTo.x > arrayX -> {
+            movingRight() -> {
                 prevDir = DIRECTION.RIGHT
                 right = true
             }
-            nextSquareToMoveTo.x < arrayX -> {
+            movingLeft() -> {
                 prevDir = DIRECTION.LEFT
                 left = true
             }
-            nextSquareToMoveTo.y > arrayY -> {
+            movingDown() -> {
                 prevDir = DIRECTION.DOWN
                 down = true
             }
-            nextSquareToMoveTo.y < arrayY -> {
+            movingUp() -> {
                 prevDir = DIRECTION.UP
                 up = true
             }
         }
     }
 
-    fun isAtNextSquare() = arrayX == nextSquareToMoveTo.x && arrayY == nextSquareToMoveTo.y
+    private fun movingRight() = nextSquareToMoveTo.x > arrayX
 
-    fun move(){
+    private fun movingLeft() = nextSquareToMoveTo.x < arrayX
+
+    private fun movingDown() = nextSquareToMoveTo.y > arrayY
+
+    private fun movingUp() = nextSquareToMoveTo.y < arrayY
+
+    private fun isAtNextSquare() = arrayX == nextSquareToMoveTo.x && arrayY == nextSquareToMoveTo.y
+
+    private fun move(){
         when{
             right -> x += velocity
             left -> x -= velocity
@@ -89,10 +111,5 @@ abstract class Sprite(arrayX: Int, arrayY: Int, id: ObjectID, val array: GameArr
         }
     }
 
-    override fun render(g: Graphics2D){
-        affineTransform = AffineTransform()
-        affineTransform.translate(x.toDouble(), y.toDouble())
-        affineTransform.scale(1.0, 1.0)
-        g.drawImage(image, affineTransform, null)
-    }
+    fun getCurrentLocation() = Tuple(arrayX, arrayY)
 }

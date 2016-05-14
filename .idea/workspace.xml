@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c2d3d2e7-7fbe-476f-a985-973863f2d54d" name="Default" comment="Added the notion of current direction to sprites, which prevents them from turning 180 degrees when choosing a new path. &#10;Abstracted some functionality from GameObject into a Sprite class for all Ghosts and Pacman.">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/framework/search/DIRECTION.kt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/framework/search/ESCAPE.kt" />
+    <list default="true" id="c2d3d2e7-7fbe-476f-a985-973863f2d54d" name="Default" comment="Improved PacMan's decision making when choosing an escape location. &#10;Made the escape location more randomised to prevent the simulation from always running the exact same way.&#10;Added rotated images that correspond with PacMan's direction.&#10;GameArray now resets all of its values before each new path is formulated.&#10;Moved AStarSearch out of PacMan and Ghost to a single instantiable class for better OO principles and reuse.&#10;Moved GameObjects to class level.&#10;Major refactor of tonnes of code, for readability and better OO principles.">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/res/PacmanDown.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/res/PacmanLeft.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/res/PacmanRight.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/res/PacmanUp.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/framework/search/AStar.kt" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/res/Pacman.png" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/PacMan/META-INF/PacMan.kotlin_module" afterPath="$PROJECT_DIR$/out/production/PacMan/META-INF/PacMan.kotlin_module" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/PacMan/objects/PacMan.class" afterPath="$PROJECT_DIR$/out/production/PacMan/objects/PacMan.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/PacMan/objects/Pill.class" afterPath="$PROJECT_DIR$/out/production/PacMan/objects/Pill.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/intf/Tickable.kt" afterPath="$PROJECT_DIR$/src/framework/intf/Tickable.kt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/obj/GameArray.java" afterPath="$PROJECT_DIR$/src/framework/obj/GameArray.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/obj/GameObject.kt" afterPath="$PROJECT_DIR$/src/framework/obj/GameObject.kt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/obj/ObjectHandler.kt" afterPath="$PROJECT_DIR$/src/framework/obj/ObjectHandler.kt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/obj/Sprite.kt" afterPath="$PROJECT_DIR$/src/framework/obj/Sprite.kt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/framework/search/AStarSearch.kt" afterPath="$PROJECT_DIR$/src/framework/search/AStarSearch.kt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/objects/GameWorld.kt" afterPath="$PROJECT_DIR$/src/objects/GameWorld.kt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/objects/Ghost.kt" afterPath="$PROJECT_DIR$/src/objects/Ghost.kt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/objects/PacMan.kt" afterPath="$PROJECT_DIR$/src/objects/PacMan.kt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/objects/Pill.kt" afterPath="$PROJECT_DIR$/src/objects/Pill.kt" />
     </list>
     <ignored path="PacMan.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -42,21 +51,9 @@
         <entry file="file://$PROJECT_DIR$/src/framework/obj/Sprite.kt">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="36" column="25" selection-start-line="36" selection-start-column="25" selection-end-line="36" selection-end-column="25" />
+              <caret line="20" column="17" selection-start-line="20" selection-start-column="17" selection-end-line="20" selection-end-column="17" />
               <folding>
-                <element signature="e#23#175#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GameObject.kt" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/framework/obj/GameObject.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.1438849">
-              <caret line="8" column="58" selection-start-line="8" selection-start-column="58" selection-end-line="8" selection-end-column="58" />
-              <folding>
-                <element signature="e#23#169#0" expanded="true" />
+                <element signature="e#23#139#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -65,42 +62,54 @@
       <file leaf-file-name="PacMan.kt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/objects/PacMan.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="49" column="0" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
+            <state vertical-scroll-proportion="-9.962963">
+              <caret line="42" column="8" selection-start-line="42" selection-start-column="8" selection-end-line="42" selection-end-column="8" />
               <folding>
-                <element signature="e#17#235#0" expanded="true" />
+                <element signature="e#17#198#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GameArray.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/framework/obj/GameArray.java">
+      <file leaf-file-name="AStar.kt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/framework/search/AStar.kt">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
+              <caret line="75" column="18" selection-start-line="75" selection-start-column="18" selection-end-line="75" selection-end-column="18" />
               <folding>
-                <element signature="imports" expanded="true" />
+                <element signature="e#26#181#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ESCAPE.kt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/framework/search/ESCAPE.kt">
+      <file leaf-file-name="GameWorld.kt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/objects/GameWorld.kt">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="4" column="14" selection-start-line="4" selection-start-column="14" selection-end-line="4" selection-end-column="14" />
+              <caret line="65" column="46" selection-start-line="65" selection-start-column="46" selection-end-line="65" selection-end-column="46" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AStarSearch.kt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/framework/search/AStarSearch.kt">
+      <file leaf-file-name="ObjectHandler.kt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/framework/obj/ObjectHandler.kt">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="67" column="21" selection-start-line="67" selection-start-column="21" selection-end-line="67" selection-end-column="21" />
+              <caret line="11" column="20" selection-start-line="11" selection-start-column="20" selection-end-line="11" selection-end-column="20" />
+              <folding>
+                <element signature="e#23#68#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AStarSearch.kt" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/framework/search/AStarSearch.kt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.25179857">
+              <caret line="14" column="8" selection-start-line="14" selection-start-column="8" selection-end-line="14" selection-end-column="8" />
               <folding>
                 <element signature="e#26#128#0" expanded="true" />
               </folding>
@@ -112,19 +121,7 @@
         <entry file="file://$PROJECT_DIR$/src/objects/Ghost.kt">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="11" column="20" selection-start-line="11" selection-start-column="20" selection-end-line="11" selection-end-column="20" />
-              <folding>
-                <element signature="e#17#143#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DIRECTION.kt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/framework/search/DIRECTION.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="7" column="8" selection-start-line="7" selection-start-column="8" selection-end-line="7" selection-end-column="8" />
+              <caret line="3" column="29" selection-start-line="3" selection-start-column="29" selection-end-line="3" selection-end-column="29" />
               <folding />
             </state>
           </provider>
@@ -137,10 +134,10 @@
       <list>
         <option value="Class" />
         <option value="Kotlin Object" />
-        <option value="Kotlin Class" />
         <option value="Kotlin File" />
         <option value="Kotlin Interface" />
         <option value="Kotlin Enum" />
+        <option value="Kotlin Class" />
       </list>
     </option>
   </component>
@@ -175,11 +172,9 @@
         <option value="$PROJECT_DIR$/src/framework/GameObject.kt" />
         <option value="$PROJECT_DIR$/src/Main.kt" />
         <option value="$PROJECT_DIR$/src/framework/object/ObjectHandler.kt" />
-        <option value="$PROJECT_DIR$/src/framework/obj/ObjectHandler.kt" />
         <option value="$PROJECT_DIR$/src/framework/obj/ObjectID.kt" />
         <option value="$PROJECT_DIR$/src/framework/intf/Renderable.kt" />
         <option value="$PROJECT_DIR$/src/framework/factory/NodeFactory.kt" />
-        <option value="$PROJECT_DIR$/src/framework/intf/Tickable.kt" />
         <option value="$PROJECT_DIR$/src/window/Game.kt" />
         <option value="$PROJECT_DIR$/src/objects/Pixel.kt" />
         <option value="$PROJECT_DIR$/src/window/GameWindow.kt" />
@@ -188,19 +183,23 @@
         <option value="$PROJECT_DIR$/src/framework/factory/BufferedImageLoader.kt" />
         <option value="$PROJECT_DIR$/src/framework/obj/Node.kt" />
         <option value="$PROJECT_DIR$/src/framework/search/Path.kt" />
-        <option value="$PROJECT_DIR$/src/framework/obj/GameArray.java" />
         <option value="$PROJECT_DIR$/src/framework/extension/ListExtensions.kt" />
-        <option value="$PROJECT_DIR$/src/objects/Pill.kt" />
         <option value="$PROJECT_DIR$/src/framework/factory/PillFactory.kt" />
-        <option value="$PROJECT_DIR$/src/framework/obj/GameObject.kt" />
         <option value="$PROJECT_DIR$/src/framework/search/DESTINATION.kt" />
         <option value="$PROJECT_DIR$/src/framework/search/ESCAPE.kt" />
-        <option value="$PROJECT_DIR$/src/objects/GameWorld.kt" />
-        <option value="$PROJECT_DIR$/src/framework/obj/Sprite.kt" />
-        <option value="$PROJECT_DIR$/src/framework/search/AStarSearch.kt" />
         <option value="$PROJECT_DIR$/src/framework/search/DIRECTION.kt" />
-        <option value="$PROJECT_DIR$/src/objects/PacMan.kt" />
+        <option value="$PROJECT_DIR$/src/framework/search/AStarSearch.kt" />
+        <option value="$PROJECT_DIR$/src/framework/obj/GameArray.java" />
+        <option value="$PROJECT_DIR$/src/framework/obj/Animation.kt" />
+        <option value="$PROJECT_DIR$/src/objects/GameWorld.kt" />
+        <option value="$PROJECT_DIR$/src/framework/obj/GameObject.kt" />
+        <option value="$PROJECT_DIR$/src/framework/obj/ObjectHandler.kt" />
+        <option value="$PROJECT_DIR$/src/framework/intf/Tickable.kt" />
+        <option value="$PROJECT_DIR$/src/objects/Pill.kt" />
+        <option value="$PROJECT_DIR$/src/framework/obj/Sprite.kt" />
+        <option value="$PROJECT_DIR$/src/framework/search/AStar.kt" />
         <option value="$PROJECT_DIR$/src/objects/Ghost.kt" />
+        <option value="$PROJECT_DIR$/src/objects/PacMan.kt" />
       </list>
     </option>
   </component>
@@ -212,9 +211,35 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
+    <option name="x" value="1280" />
     <option name="y" value="23" />
-    <option name="width" value="2560" />
+    <option name="width" value="1280" />
     <option name="height" value="1368" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state>
+        <expanded-state>
+          <State>
+            <id />
+          </State>
+          <State>
+            <id>Android Lint</id>
+          </State>
+          <State>
+            <id>UI Form Problems</id>
+          </State>
+          <State>
+            <id>XPath</id>
+          </State>
+        </expanded-state>
+        <selected-state>
+          <State>
+            <id>Android</id>
+          </State>
+        </selected-state>
+      </profile-state>
+    </entry>
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -242,6 +267,8 @@
     </navigator>
     <panes>
       <pane id="Scratches" />
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -436,8 +463,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -445,6 +470,8 @@
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
+    <property name="settings.editor.selected.configurable" value="reference.idesettings.quicklists" />
+    <property name="settings.editor.splitter.proportion" value="0.2" />
   </component>
   <component name="RecentsManager">
     <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
@@ -784,7 +811,13 @@
       <option name="project" value="LOCAL" />
       <updated>1462720154545</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Added the notion of current direction to sprites, which prevents them from turning 180 degrees when choosing a new path. &#10;Abstracted some functionality from GameObject into a Sprite class for all Ghosts and Pacman.">
+      <created>1463154262114</created>
+      <option name="number" value="00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1463154262114</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -797,7 +830,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="2560" height="1368" extended-state="6" />
+    <frame x="1280" y="23" width="1280" height="1368" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -810,7 +843,8 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32680252" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.0969023" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19709209" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3354232" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -822,31 +856,31 @@
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32956383" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3354232" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3261105" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32591093" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32445142" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39890283" sideWeight="0.5015886" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32932165" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32692307" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2543036" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32680252" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32956383" sideWeight="0.5" order="6" side_tool="true" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18518518" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19709209" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3360324" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3354232" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3995633" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39890283" sideWeight="0.49841145" order="3" side_tool="false" content_ui="tabs" />
     </layout-to-restore>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -863,7 +897,8 @@
     <MESSAGE value="PacMan now autonomously finds and consumes every single pill on the map.&#10;Added functionality to find the pill that is closest to PacMan's current location.&#10;Moved Pills into GameArray Node class rather than the object handler to improve performance and convenience." />
     <MESSAGE value="Added the Ghost class, and an instance in the map upon startup.&#10;Pulled out a lot of Pacman's code into the more general Sprite class for reusability between ghosts and pacman.&#10;More refactors." />
     <MESSAGE value="Added the notion of current direction to sprites, which prevents them from turning 180 degrees when choosing a new path. &#10;Abstracted some functionality from GameObject into a Sprite class for all Ghosts and Pacman." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added the notion of current direction to sprites, which prevents them from turning 180 degrees when choosing a new path. &#10;Abstracted some functionality from GameObject into a Sprite class for all Ghosts and Pacman." />
+    <MESSAGE value="Improved PacMan's decision making when choosing an escape location. &#10;Made the escape location more randomised to prevent the simulation from always running the exact same way.&#10;Added rotated images that correspond with PacMan's direction.&#10;GameArray now resets all of its values before each new path is formulated.&#10;Moved AStarSearch out of PacMan and Ghost to a single instantiable class for better OO principles and reuse.&#10;Moved GameObjects to class level.&#10;Major refactor of tonnes of code, for readability and better OO principles." />
+    <option name="LAST_COMMIT_MESSAGE" value="Improved PacMan's decision making when choosing an escape location. &#10;Made the escape location more randomised to prevent the simulation from always running the exact same way.&#10;Added rotated images that correspond with PacMan's direction.&#10;GameArray now resets all of its values before each new path is formulated.&#10;Moved AStarSearch out of PacMan and Ghost to a single instantiable class for better OO principles and reuse.&#10;Moved GameObjects to class level.&#10;Major refactor of tonnes of code, for readability and better OO principles." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -884,7 +919,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="80" column="0" selection-start-line="80" selection-start-column="0" selection-end-line="80" selection-end-column="0" />
           <folding>
-            <element signature="e#17#235#0" expanded="true" />
+            <element signature="e#17#198#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -928,7 +963,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#23#169#0" expanded="true" />
+            <element signature="e#23#150#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -966,11 +1001,6 @@
     </entry>
     <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_74.jdk/Contents/Home/src.zip!/java/awt/Canvas.java" />
     <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_74.jdk/Contents/Home/src.zip!/java/awt/image/BufferStrategy.java" />
-    <entry file="file://$PROJECT_DIR$/res/Pacman.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
     <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_74.jdk/Contents/Home/src.zip!/java/awt/image/ImageObserver.java" />
     <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_74.jdk/Contents/Home/src.zip!/java/awt/Graphics.java" />
     <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_74.jdk/Contents/Home/src.zip!/java/util/PriorityQueue.java" />
@@ -1021,14 +1051,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/objects/Pixel.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.04709576">
-          <caret line="2" column="5" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$KOTLIN_BUNDLED$/lib/kotlin-runtime-sources.jar!/kotlin/util/Tuples.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3322884">
@@ -1041,16 +1063,6 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="22" selection-start-line="0" selection-start-column="22" selection-end-line="0" selection-end-column="22" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/intf/Tickable.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="5" column="10" selection-start-line="5" selection-start-column="10" selection-end-line="5" selection-end-column="10" />
-          <folding>
-            <element signature="e#24#74#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1069,16 +1081,6 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="4" column="10" selection-start-line="4" selection-start-column="10" selection-end-line="4" selection-end-column="10" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/obj/ObjectHandler.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="15" column="8" selection-start-line="15" selection-start-column="8" selection-end-line="15" selection-end-column="8" />
-          <folding>
-            <element signature="e#23#68#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1127,16 +1129,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/objects/Pill.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.14405762">
-          <caret line="8" column="79" selection-start-line="8" selection-start-column="79" selection-end-line="8" selection-end-column="79" />
-          <folding>
-            <element signature="e#17#146#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/framework/factory/PillFactory.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.018007202">
@@ -1153,18 +1145,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/objects/GameWorld.kt">
+    <entry file="file://$PROJECT_DIR$/src/framework/search/DIRECTION.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="61" column="27" selection-start-line="61" selection-start-column="27" selection-end-line="61" selection-end-column="27" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/obj/Node.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <caret line="7" column="8" selection-start-line="7" selection-start-column="8" selection-end-line="7" selection-end-column="8" />
           <folding />
         </state>
       </provider>
@@ -1177,12 +1161,56 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/obj/Node.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="4" column="6" selection-start-line="4" selection-start-column="6" selection-end-line="4" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/framework/obj/GameArray.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
+          <caret line="91" column="37" selection-start-line="91" selection-start-column="37" selection-end-line="91" selection-end-column="37" />
           <folding>
             <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/objects/Pixel.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.036101084">
+          <caret line="2" column="5" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/intf/Tickable.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.036101084">
+          <caret line="2" column="20" selection-start-line="2" selection-start-column="20" selection-end-line="2" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/framework/obj/GameObject.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.12635379">
+          <caret line="7" column="22" selection-start-line="7" selection-start-column="22" selection-end-line="7" selection-end-column="22" />
+          <folding>
+            <element signature="e#23#150#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/objects/Pill.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.433213">
+          <caret line="24" column="70" selection-start-line="24" selection-start-column="70" selection-end-line="24" selection-end-column="70" />
+          <folding>
+            <element signature="e#17#97#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1190,27 +1218,37 @@
     <entry file="file://$PROJECT_DIR$/src/framework/obj/Sprite.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="36" column="25" selection-start-line="36" selection-start-column="25" selection-end-line="36" selection-end-column="25" />
+          <caret line="20" column="17" selection-start-line="20" selection-start-column="17" selection-end-line="20" selection-end-column="17" />
           <folding>
-            <element signature="e#23#175#0" expanded="true" />
+            <element signature="e#23#139#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/search/DIRECTION.kt">
+    <entry file="file://$PROJECT_DIR$/src/framework/obj/ObjectHandler.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="7" column="8" selection-start-line="7" selection-start-column="8" selection-end-line="7" selection-end-column="8" />
+          <caret line="11" column="20" selection-start-line="11" selection-start-column="20" selection-end-line="11" selection-end-column="20" />
+          <folding>
+            <element signature="e#23#68#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/objects/GameWorld.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="65" column="46" selection-start-line="65" selection-start-column="46" selection-end-line="65" selection-end-column="46" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/search/AStarSearch.kt">
+    <entry file="file://$PROJECT_DIR$/src/framework/search/AStar.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="67" column="21" selection-start-line="67" selection-start-column="21" selection-end-line="67" selection-end-column="21" />
+          <caret line="75" column="18" selection-start-line="75" selection-start-column="18" selection-end-line="75" selection-end-column="18" />
           <folding>
-            <element signature="e#26#128#0" expanded="true" />
+            <element signature="e#26#181#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1218,29 +1256,27 @@
     <entry file="file://$PROJECT_DIR$/src/objects/Ghost.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="11" column="20" selection-start-line="11" selection-start-column="20" selection-end-line="11" selection-end-column="20" />
-          <folding>
-            <element signature="e#17#143#0" expanded="true" />
-          </folding>
+          <caret line="3" column="29" selection-start-line="3" selection-start-column="29" selection-end-line="3" selection-end-column="29" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/objects/PacMan.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="49" column="0" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
+        <state vertical-scroll-proportion="-9.962963">
+          <caret line="42" column="8" selection-start-line="42" selection-start-column="8" selection-end-line="42" selection-end-column="8" />
           <folding>
-            <element signature="e#17#235#0" expanded="true" />
+            <element signature="e#17#198#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/framework/obj/GameObject.kt">
+    <entry file="file://$PROJECT_DIR$/src/framework/search/AStarSearch.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.1438849">
-          <caret line="8" column="58" selection-start-line="8" selection-start-column="58" selection-end-line="8" selection-end-column="58" />
+        <state vertical-scroll-proportion="0.25179857">
+          <caret line="14" column="8" selection-start-line="14" selection-start-column="8" selection-end-line="14" selection-end-column="8" />
           <folding>
-            <element signature="e#23#169#0" expanded="true" />
+            <element signature="e#26#128#0" expanded="true" />
           </folding>
         </state>
       </provider>

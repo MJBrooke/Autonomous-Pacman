@@ -26,6 +26,18 @@ public class GameArray implements Renderable {
         return array[tuple.first][tuple.second];
     }
 
+    public void clearValues(){
+        for(int i = 1; i <= WORLD_WIDTH; i++) {
+            for (int j = 1; j <= WORLD_HEIGHT; j++) {
+                Node node = array[i][j];
+                node.setParentNode(null);
+                node.setCostToGetHereSoFarG(0F);
+                node.setDistanceToGoalH(0F);
+                node.setNodeCostF(0F);
+            }
+        }
+    }
+
     private LinkedList<Node> getListOfUneatenPills(){
 
         LinkedList<Node> listOfNodes = new LinkedList<>();

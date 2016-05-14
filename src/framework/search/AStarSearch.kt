@@ -43,6 +43,7 @@ object AStarSearch {
         fun getInitialNeighbours(node: Node): LinkedList<Node>{
 
             val neighbours = LinkedList<Node>()
+
             with(node) {
                 if(y > 0){ //ABOVE
                     if(dir != DIRECTION.DOWN) {

@@ -4,9 +4,8 @@ import framework.intf.Renderable
 import framework.intf.Tickable
 import java.awt.Graphics2D
 import java.awt.geom.AffineTransform
-import java.util.*
 
-abstract class GameObject(var arrayX: Int, var arrayY: Int, val id: ObjectID): Tickable, Renderable {
+abstract class GameObject(var arrayX: Int, var arrayY: Int): Tickable, Renderable {
 
     lateinit var affineTransform: AffineTransform
 
@@ -16,7 +15,7 @@ abstract class GameObject(var arrayX: Int, var arrayY: Int, val id: ObjectID): T
     var width = 0
     var height = 0
 
-    abstract override fun tick(objects: LinkedList<GameObject>)
+    abstract override fun tick()
 
     abstract override fun render(g: Graphics2D)
 }

@@ -63,7 +63,7 @@ class GameWorld : Renderable {
     }
 
     private fun addPacMan(){
-        pacman = PacMan(14, 23, world)
+        pacman = PacMan(14, 23, world, handler)
         handler.addGameObject(pacman)
     }
 

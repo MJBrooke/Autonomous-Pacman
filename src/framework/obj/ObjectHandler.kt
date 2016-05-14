@@ -9,7 +9,7 @@ class ObjectHandler() {
 
     fun tick(){
         objects.forEach {
-            it.tick(objects)
+            it.tick()
         }
     }
 
