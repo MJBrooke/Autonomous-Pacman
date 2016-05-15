@@ -1,7 +1,7 @@
 package framework.obj;
 
 import framework.intf.Renderable;
-import framework.search.AStarSearch;
+import framework.search.NodeDistance;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -66,8 +66,8 @@ public class GameArray implements Renderable {
 
             for (Node node : listOfNodes) {
 
-                if (AStarSearch.getDistanceBetweenNodes(currentLocation, currentClosestNode)
-                        >= AStarSearch.getDistanceBetweenNodes(currentLocation, node)) {
+                if (NodeDistance.getDistanceBetweenNodes(currentLocation, currentClosestNode)
+                        >= NodeDistance.getDistanceBetweenNodes(currentLocation, node)) {
                     currentClosestNode = node;
                 }
 

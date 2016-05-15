@@ -30,7 +30,7 @@ class GameWorld : Renderable {
         getLevelImage(path)
         iterateOverImagePixels()
         addPacMan()
-        addGhost()
+        addGhosts()
     }
 
     private fun getLevelImage(path: String){
@@ -67,8 +67,11 @@ class GameWorld : Renderable {
         handler.addGameObject(pacman)
     }
 
-    private fun addGhost(){
-        val ghost = Ghost(13, 14, world, pacman)
-        handler.addGameObject(ghost)
+    private fun addGhosts(){
+        val redGhost = RedGhost(13, 14, world, pacman)
+        val orangeGhost = OrangeGhost(13, 14, world, pacman)
+
+        handler.addGameObject(redGhost)
+        handler.addGameObject(orangeGhost)
     }
 }

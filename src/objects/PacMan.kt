@@ -3,12 +3,15 @@ package objects
 import framework.obj.*
 import framework.search.AStar
 import framework.search.DIRECTION
+import java.awt.Color
 import java.awt.Graphics2D
 import java.io.File
 import java.util.*
 import javax.imageio.ImageIO
 
 class PacMan(arrayX: Int, arrayY: Int, array: GameArray, handler: ObjectHandler) : Sprite(arrayX, arrayY, array){
+
+    var lives = 3
 
     val proximitySensitivity = 2
 
@@ -26,7 +29,6 @@ class PacMan(arrayX: Int, arrayY: Int, array: GameArray, handler: ObjectHandler)
     }
 
     private fun createInitialPath(){
-//        path = AStarSearch.findAPath(array, Tuple(arrayX, arrayY), Tuple(15, 23))
         path = AStarSearch.findAPathToPill(Tuple(arrayX, arrayY), Tuple(15, 23))
         nextSquareToMoveTo = path.remove()
     }
@@ -46,6 +48,10 @@ class PacMan(arrayX: Int, arrayY: Int, array: GameArray, handler: ObjectHandler)
             DIRECTION.LEFT -> g.drawImage(imgLeft, affineTransform, null)
             DIRECTION.RIGHT -> g.drawImage(imgRight, affineTransform, null)
         }
+
+
+        g.color = Color.yellow
+        g.drawString("$lives", 5F, 15F)
 
         //TODO - remove this path-rendering after debugging is done
         //path.render(g)
@@ -128,7 +134,6 @@ class PacMan(arrayX: Int, arrayY: Int, array: GameArray, handler: ObjectHandler)
             fleeX = getRandomNumberInRange(lowX, highX)
             fleeY = getRandomNumberInRange(lowY, highY)
 
-            //TODO - refactor into explanatory methods
             if(isValidLocation(fleeX, fleeY))
                 validLocationFound = true
         }
@@ -145,7 +150,11 @@ class PacMan(arrayX: Int, arrayY: Int, array: GameArray, handler: ObjectHandler)
     private fun thereIsAnotherPill(pill: Tuple) = pill.first != 0 && pill.second != 0
 
     private fun checkCollision(){
+        checkForCollisionWithPill()
+        checkForCollisionWithGhost()
+    }
 
+    private fun checkForCollisionWithPill(){
         val node = array.getNode(arrayX, arrayY)
 
         if(node.pill != null){
@@ -153,143 +162,25 @@ class PacMan(arrayX: Int, arrayY: Int, array: GameArray, handler: ObjectHandler)
         }
     }
 
-//    fun findAPath(fromTuple: Tuple, toTuple: Tuple): LinkedList<Node> {
-//        val open = LinkedList<Node>()
-//        val closed = LinkedList<Node>()
-//        val goalFound = false
-//        val startNode = array.getNode(fromTuple)
-//        val goalNode = array.getNode(toTuple)
-//        var currentNode: Node
-//        var ghost: Ghost? = null
-//
-//        //TODO - this code is whack. Maybe pass actual references of each ghost?
-//        objects.forEach {
-//            if (it is Ghost) {
-//                ghost = it
-//            }
-//        }
-//
-//        fun getLowestFNodeFromOpenList(): Node {
-//
-//            var lowestFNode = open.first
-//
-//            open.forEach {
-//                if(lowestFNode.nodeCostF > it.nodeCostF)
-//                    lowestFNode = it
-//            }
-//
-//            return lowestFNode
-//        }
-//
-//        fun swapNodeFromOpenToClosedList(node: Node){
-//            closed.add(node)
-//            open.remove(node)
-//        }
-//
-//        fun isAtGoal(node: Node) = (node.x == toTuple.first) && (node.y == toTuple.second)
-//
-//        fun getNeighbours(node: Node): LinkedList<Node> {
-//
-//            val neighbours = LinkedList<Node>()
-//
-//            with(node) {
-//                if(y > 0){
-//                    val neighbour = array.getNode(x, y - 1)
-//                    if(!neighbour.wall)
-//                        neighbours.add(neighbour)
-//                }
-//
-//                if(x > 0) {
-//                    val neighbour = array.getNode(x - 1, y)
-//                    if(!neighbour.wall)
-//                        neighbours.add(neighbour)
-//                }
-//
-//                if(x < GameArray.WIDTH) {
-//                    val neighbour = array.getNode(x + 1, y)
-//                    if(!neighbour.wall)
-//                        neighbours.add(neighbour)
-//                }
-//
-//                if(y < GameArray.HEIGHT) {
-//                    val neighbour = array.getNode(x, y + 1)
-//                    if(!neighbour.wall)
-//                        neighbours.add(neighbour)
-//                }
-//            }
-//            return neighbours
-//        }
-//
-//        fun getPathToGoal(start: Node, goal: Node): LinkedList<Node> {
-//            val path = LinkedList<Node>()
-//            var pathCompleted = false
-//            var currNode: Node? = goal
-//
-//            while(!pathCompleted){
-//                path.addFirst(currNode)
-//                currNode = currNode!!.parentNode
-//
-//                if(currNode!!.x == start.x && currNode.y == start.y)
-//                    pathCompleted = true
-//            }
-//
-//            return path
-//        }
-//
-//        if(isAtGoal(startNode)) {
-//            val list = LinkedList<Node>()
-//            list.addFirst(startNode)
-//            return list
-//        }
-//
-//        open.add(startNode)
-//
-//        while(!goalFound){
-//
-//            currentNode = getLowestFNodeFromOpenList()
-//            swapNodeFromOpenToClosedList(currentNode)
-//
-//            if(isAtGoal(currentNode)) {
-//                return getPathToGoal(startNode, currentNode)
-//            }
-//
-//            val neighbours = getNeighbours(currentNode)
-//
-//            for(neighbour in neighbours){
-//
-//                if(open.contains(neighbour)){
-//                    if(neighbour.costToGetHereSoFarG > currentNode.costToGetHereSoFarG + AStarSearch.movementCost){
-//
-//                        neighbour.costToGetHereSoFarG = currentNode.costToGetHereSoFarG + AStarSearch.movementCost
-//
-//                        neighbour.nodeCostF = neighbour.distanceToGoalH + neighbour.costToGetHereSoFarG
-//
-//                        if(neighbour.x == ghost!!.arrayX && neighbour.y == ghost!!.arrayY)
-//                            neighbour.nodeCostF += 1000
-//                        //neighbour.parentNode = currentNode
-//                    }
-//                } else {
-//                    if(!closed.contains(neighbour)) {
-//                        neighbour.distanceToGoalH = AStarSearch.getDistanceBetweenNodes(neighbour, goalNode)
-//
-//                        neighbour.costToGetHereSoFarG =
-//                            currentNode.costToGetHereSoFarG + AStarSearch.movementCost
-//
-//                        neighbour.nodeCostF = neighbour.distanceToGoalH + neighbour.costToGetHereSoFarG
-//
-//                        if(neighbour.x == ghost!!.arrayX && neighbour.y == ghost!!.arrayY)
-//                            neighbour.nodeCostF += 1000
-//
-//                        neighbour.parentNode = currentNode
-//                        open.add(neighbour)
-//                    }
-//                }
-//            }
-//            if(open.isEmpty())
-//                return LinkedList()
-//        }
-//        return LinkedList()
-//    }
+    private fun checkForCollisionWithGhost(){
+        objects.forEach {
+            if(it is Ghost){
+                if(arrayX == it.arrayX && arrayY == it.arrayY){
+                    resetPacman()
+                }
+            }
+        }
+    }
+
+    private fun resetPacman(){
+        lives--
+        arrayX = 14
+        arrayY = 23
+        x = arrayX*32F
+        y = arrayY*32F
+        path = LinkedList()
+        nextSquareToMoveTo = Node(14,23)
+    }
 }
 
 

@@ -4,10 +4,13 @@ import framework.obj.GameArray
 import framework.obj.GameObject
 import framework.obj.Node
 import framework.obj.Tuple
-import objects.Ghost
+import objects.OrangeGhost
+import objects.RedGhost
 import java.util.*
 
 class AStar(val array: GameArray, val objects: LinkedList<GameObject> = LinkedList()) {
+
+    val movementCost = 1
 
     val open = LinkedList<Node>()
     val closed = LinkedList<Node>()
@@ -15,7 +18,8 @@ class AStar(val array: GameArray, val objects: LinkedList<GameObject> = LinkedLi
     lateinit var startNode: Node
     lateinit var goalNode: Node
     lateinit var currentNode: Node
-    var ghost: Ghost? = null
+
+    //TODO - refactor out all of the repeated code
 
     fun findAPathToPacMan(fromTuple: Tuple, toTuple: Tuple, dir: DIRECTION): LinkedList<Node> {
         open.clear()
@@ -52,15 +56,15 @@ class AStar(val array: GameArray, val objects: LinkedList<GameObject> = LinkedLi
             for(neighbour in neighbours){
 
                 if(open.contains(neighbour)){
-                    if(neighbour.costToGetHereSoFarG > currentNode.costToGetHereSoFarG + AStarSearch.movementCost){
-                        neighbour.costToGetHereSoFarG = currentNode.costToGetHereSoFarG + AStarSearch.movementCost
+                    if(neighbour.costToGetHereSoFarG > currentNode.costToGetHereSoFarG + movementCost){
+                        neighbour.costToGetHereSoFarG = currentNode.costToGetHereSoFarG + movementCost
                         neighbour.nodeCostF = neighbour.distanceToGoalH + neighbour.costToGetHereSoFarG
                         neighbour.parentNode = currentNode
                     }
                 } else {
                     if(!closed.contains(neighbour)) {
-                        neighbour.distanceToGoalH = AStarSearch.getDistanceBetweenNodes(neighbour, goalNode)
-                        neighbour.costToGetHereSoFarG = currentNode.costToGetHereSoFarG + AStarSearch.movementCost
+                        neighbour.distanceToGoalH = NodeDistance.getDistanceBetweenNodes(neighbour, goalNode)
+                        neighbour.costToGetHereSoFarG = currentNode.costToGetHereSoFarG + movementCost
                         neighbour.nodeCostF = neighbour.distanceToGoalH + neighbour.costToGetHereSoFarG
                         neighbour.parentNode = currentNode
                         open.add(neighbour)
@@ -80,13 +84,6 @@ class AStar(val array: GameArray, val objects: LinkedList<GameObject> = LinkedLi
 
         startNode = array.getNode(fromTuple)
         goalNode = array.getNode(toTuple)
-
-        //TODO - this code is whack. Maybe pass actual references of each ghost?
-        objects.forEach {
-            if (it is Ghost) {
-                ghost = it
-            }
-        }
 
         if(isAtGoal(startNode, toTuple)) {
             val list = LinkedList<Node>()
@@ -110,24 +107,28 @@ class AStar(val array: GameArray, val objects: LinkedList<GameObject> = LinkedLi
             for(neighbour in neighbours){
 
                 if(open.contains(neighbour)){
-                    if(neighbour.costToGetHereSoFarG > currentNode.costToGetHereSoFarG + AStarSearch.movementCost){
-                        neighbour.costToGetHereSoFarG = currentNode.costToGetHereSoFarG + AStarSearch.movementCost
+                    if(neighbour.costToGetHereSoFarG > currentNode.costToGetHereSoFarG + movementCost){
+                        neighbour.costToGetHereSoFarG = currentNode.costToGetHereSoFarG + movementCost
                         neighbour.nodeCostF = neighbour.distanceToGoalH + neighbour.costToGetHereSoFarG
 
-                        if(ghost != null) {
-                            if (neighbour.x == ghost!!.arrayX && neighbour.y == ghost!!.arrayY)
-                                neighbour.nodeCostF += 1000
+                        objects.forEach {
+                            if(it is RedGhost || it is OrangeGhost){
+                                if (neighbour.x == it.arrayX && neighbour.y == it.arrayY)
+                                    neighbour.nodeCostF += 1000
+                            }
                         }
                     }
                 } else {
                     if(!closed.contains(neighbour)) {
-                        neighbour.distanceToGoalH = AStarSearch.getDistanceBetweenNodes(neighbour, goalNode)
-                        neighbour.costToGetHereSoFarG = currentNode.costToGetHereSoFarG + AStarSearch.movementCost
+                        neighbour.distanceToGoalH = NodeDistance.getDistanceBetweenNodes(neighbour, goalNode)
+                        neighbour.costToGetHereSoFarG = currentNode.costToGetHereSoFarG + movementCost
                         neighbour.nodeCostF = neighbour.distanceToGoalH + neighbour.costToGetHereSoFarG
 
-                        if(ghost != null) {
-                            if (neighbour.x == ghost!!.arrayX && neighbour.y == ghost!!.arrayY)
-                                neighbour.nodeCostF += 1000
+                        objects.forEach {
+                            if(it is RedGhost || it is OrangeGhost){
+                                if (neighbour.x == it.arrayX && neighbour.y == it.arrayY)
+                                    neighbour.nodeCostF += 1000
+                            }
                         }
 
                         neighbour.parentNode = currentNode

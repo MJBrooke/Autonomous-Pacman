@@ -57,7 +57,7 @@ abstract class Sprite(arrayX: Int, arrayY: Int, val array: GameArray) : GameObje
         setDirectionToMove()
     }
 
-    private fun getNextSquareToMoveTo(){
+    protected open fun getNextSquareToMoveTo(){
         if(isAtNextSquare()) {
             if(!path.isEmpty())
                 nextSquareToMoveTo = path.remove()
