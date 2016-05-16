@@ -3,7 +3,6 @@ package objects
 import framework.obj.*
 import framework.search.AStar
 import framework.search.DIRECTION
-import java.awt.Color
 import java.awt.Graphics2D
 import java.io.File
 import java.util.*
@@ -42,19 +41,31 @@ class PacMan(arrayX: Int, arrayY: Int, array: GameArray, handler: ObjectHandler)
 
         super.render(g)
 
+        renderPacMan(g)
+        renderLives(g)
+
+        //Uncomment the below code to render the path that pacman is undertaking
+        //path.render(g)
+    }
+
+    private fun renderPacMan(g: Graphics2D){
         when(prevDir){
             DIRECTION.UP -> g.drawImage(imgUp, affineTransform, null)
             DIRECTION.DOWN -> g.drawImage(imgDown, affineTransform, null)
             DIRECTION.LEFT -> g.drawImage(imgLeft, affineTransform, null)
             DIRECTION.RIGHT -> g.drawImage(imgRight, affineTransform, null)
         }
+    }
 
+    private fun renderLives(g: Graphics2D){
+        if(lives > 2)
+            g.drawImage(imgRight, 64, 0, null)
 
-        g.color = Color.yellow
-        g.drawString("$lives", 5F, 15F)
+        if(lives > 1)
+            g.drawImage(imgRight, 32, 0, null)
 
-        //TODO - remove this path-rendering after debugging is done
-        //path.render(g)
+        if(lives > 0)
+            g.drawImage(imgRight, 0, 0,  null)
     }
 
     override fun updatePath(){
@@ -174,12 +185,15 @@ class PacMan(arrayX: Int, arrayY: Int, array: GameArray, handler: ObjectHandler)
 
     private fun resetPacman(){
         lives--
-        arrayX = 14
-        arrayY = 23
-        x = arrayX*32F
-        y = arrayY*32F
-        path = LinkedList()
-        nextSquareToMoveTo = Node(14,23)
+
+        if(lives > 0) {
+            arrayX = 14
+            arrayY = 23
+            x = arrayX * 32F
+            y = arrayY * 32F
+            path = LinkedList()
+            nextSquareToMoveTo = Node(14, 23)
+        }
     }
 }
 

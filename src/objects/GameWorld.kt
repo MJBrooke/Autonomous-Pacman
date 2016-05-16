@@ -5,20 +5,31 @@ import framework.factory.BufferedImageLoader
 import framework.factory.NodeFactory
 import framework.factory.PillFactory
 import framework.intf.Renderable
+import framework.intf.Tickable
 import framework.obj.ObjectHandler
 import java.awt.Graphics2D
 import java.awt.image.BufferedImage
 
-class GameWorld : Renderable {
+class GameWorld : Tickable, Renderable {
 
     val world = GameArray()
     val handler = ObjectHandler()
+    var gameOver = false
+    var gameWon = false
 
     lateinit var levelImg: BufferedImage
     lateinit var pacman: PacMan
 
-    fun tick() {
+    override fun tick() {
         handler.tick()
+
+        if(pacman.lives == 0)
+            gameOver = true
+
+        if(world.listOfUneatenPills.isEmpty()){
+            gameOver = true
+            gameWon = true
+        }
     }
 
     override fun render(g: Graphics2D) {

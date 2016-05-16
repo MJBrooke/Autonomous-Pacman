@@ -38,7 +38,7 @@ public class GameArray implements Renderable {
         }
     }
 
-    private LinkedList<Node> getListOfUneatenPills(){
+    public LinkedList<Node> getListOfUneatenPills(){
 
         LinkedList<Node> listOfNodes = new LinkedList<>();
 
