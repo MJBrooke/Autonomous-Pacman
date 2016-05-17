@@ -24,40 +24,34 @@ class Game : Canvas(), Runnable {
     }
 
     override fun run() {
-        println("Game started")
-
         initGame()
 
         requestFocus()
 
-        var lastTime = System.nanoTime()
-        val amountOfTicks = 60.0
-        val ns = 1000000000 / amountOfTicks
+        val numTicks = 60.0
+        val nanoSeconds = 1000000000 / numTicks
+
+        var currTime = System.nanoTime()
         var delta = 0.0
-        var timer = System.currentTimeMillis()
-        var updates = 0
-        var frames = 0
+        var gameTimer = System.currentTimeMillis()
 
         while (running) {
-            val now = System.nanoTime()
-            delta += (now - lastTime) / ns
-            lastTime = now
+            val newTime = System.nanoTime()
+
+            delta += (newTime - currTime) / nanoSeconds
+            currTime = newTime
+
             while (delta >= 1) {
-                if(!gameWorld.gameOver) {
+                if(!gameWorld.gameOver)
                     tick()
-                    updates++
-                }
+
+                render()
+
                 delta--
             }
-            render() //Renders as fast as the computer can go, but updates game at a consistent rate of 60
-            frames++
 
-            if (System.currentTimeMillis() - timer > 1000) {
-                timer += 1000
-                println("FPS: $frames - Ticks: $updates")
-                frames = 0
-                updates = 0
-            }
+            if (System.currentTimeMillis() - gameTimer > 1000)
+                gameTimer += 1000
         }
     }
 
